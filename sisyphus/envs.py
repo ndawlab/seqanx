@@ -5,34 +5,40 @@ from matplotlib.colors import ListedColormap
 from scipy.sparse import csr_matrix
 from scipy.spatial.distance import cdist
 
+"""Gridworld environments submodule."""
+
 class GridWorld(object):
     """Generate gridworld environment.
     
     Parameters
     ----------
     grid : array, shape = (n,m)
-        Binary array where 1 denoting occupiable states and 0 otherwise.
+        2-D binary array, where 1 denotes occupiable states and 0 otherwise.
     rewards : array, shape = (n,m)
-        Array denoting the reward for transitioning into corresponding state.
+        2-D array denoting the reward for transitioning from S to S'.
     start : int
-        Starting state (default = None).
-    terminal : list or array
-        Terminal states (default = None).
+        Starting state.
+    terminal : int | array (Default None).
+        Terminal states.
     
     Attributes
     ----------
-    states : array, shape = (n)
-        List of state indices.
+    states : array, shape = (n,)
+        Indices of states.
     n_states : int
-        Number of unique states.
+        Total number of states.
     viable_states : array
-        List of viable state indices
+        Indices of viable states.
     n_viable_states : int
         Number of viable states.
     shape : tuple
         Size of gridworld.
-    T : array, shape = (n_states, 4)
-        One-step transition matrix.
+    R : array, shape = (n_states,)
+        Reward associated with transitioning to given state.
+    T : sparse CSR matrix
+        One-step transition matrix where row and col indices denote
+        denote state and successor state, respectively, and data
+        denote the associated Q-value.
     """
     
     def __init__(self, grid, rewards, start=None, terminal=None):
@@ -50,13 +56,17 @@ class GridWorld(object):
         self.states = np.arange(grid.size).reshape(self.shape)
         self.n_states = self.states.size
         
-        self.viable_states = self.states[np.where(grid)]
+        viable_states = np.logical_xor(grid.flatten(), np.isin(self.states.flatten(), self.terminal))
+        self.viable_states = np.argwhere(viable_states).squeeze()
         self.n_viable_states = self.viable_states.size
         
         ## Define one-step transition matrix.
-        self.T = self._one_step_transition_matrix(rewards) 
+        self.T = self._one_step_transition_matrix() 
         
-    def _one_step_transition_matrix(self, rewards):
+        ## Define rewards.
+        self.R = np.copy(rewards).flatten().astype(float)
+        
+    def _one_step_transition_matrix(self):
         """Returns the sparse CSR one-step transition matrix."""
 
         ## Define grid coordinates.
@@ -71,33 +81,32 @@ class GridWorld(object):
         A[self.terminal] = 0
         A[self.terminal, self.terminal] = 1
         
-        ## Store rewards.
-        row, col = A.nonzero()
-        data = rewards.flatten()[col]
-        data[np.in1d(row, self.terminal)] = 0
-        
         ## Convert to sparse CSR matrix.
-        return csr_matrix((data, (row,col)), A.shape, dtype=float)
+        data = np.arange(A.sum())
+        row, col = A.nonzero()        
+        return csr_matrix((data, (row,col)), A.shape, dtype=int)
 
 class OpenField(GridWorld):
     """Open field task environment.
     
     Attributes
     ----------
-    states : array, shape = (n)
-        List of state indices.
+    states : array, shape = (n,)
+        Indices of states.
     n_states : int
-        Number of unique states.
+        Total number of states.
     viable_states : array
-        List of viable state indices
+        Indices of viable states.
     n_viable_states : int
         Number of viable states.
     shape : tuple
         Size of gridworld.
-    R : array, shape = (n_states, 4)
-        State-transition rewards.
-    T : array, shape = (n_states, 4)
-        One-step transition matrix.
+    R : array, shape = (n_states,)
+        Reward associated with transitioning to given state.
+    T : sparse CSR matrix
+        One-step transition matrix where row and col indices denote
+        denote state and successor state, respectively, and data
+        denote the associated Q-value.
     """
     
     def __init__(self):
@@ -156,20 +165,22 @@ class CliffWalking(GridWorld):
     
     Attributes
     ----------
-    states : array, shape = (n)
-        List of state indices.
+    states : array, shape = (n,)
+        Indices of states.
     n_states : int
-        Number of unique states.
+        Total number of states.
     viable_states : array
-        List of viable state indices
+        Indices of viable states.
     n_viable_states : int
         Number of viable states.
     shape : tuple
         Size of gridworld.
-    R : array, shape = (n_states, 4)
-        State-transition rewards.
-    T : array, shape = (n_states, 4)
-        One-step transition matrix.
+    R : array, shape = (n_states,)
+        Reward associated with transitioning to given state.
+    T : sparse CSR matrix
+        One-step transition matrix where row and col indices denote
+        denote state and successor state, respectively, and data
+        denote the associated Q-value.
     """
     
     def __init__(self):
@@ -224,89 +235,6 @@ class CliffWalking(GridWorld):
 
         ## Plot.
         ax = sns.heatmap(grid, cmap=cmap, cbar=False, linewidths=0.01, linecolor='0.75', ax=ax)
-        ax.set(xticklabels=[], yticklabels=[])
-        
-        return ax
-
-class TwoStepTask(GridWorld):
-    """Two-step task environment.
-    
-    Attributes
-    ----------
-    states : array, shape = (n)
-        List of state indices.
-    n_states : int
-        Number of unique states.
-    viable_states : array
-        List of viable state indices
-    n_viable_states : int
-        Number of viable states.
-    shape : tuple
-        Size of gridworld.
-    R : array, shape = (n_states, 4)
-        State-transition rewards.
-    T : array, shape = (n_states, 4)
-        One-step transition matrix.
-    """
-    
-    def __init__(self):
-            
-        ## Define gridworld.
-        grid = np.array([[1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1],
-                         [0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0],
-                         [0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0],
-                         [0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-                         [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-                         [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0]])
-
-        ## Define start/stop information.     
-        start = 60
-        terminal = np.array([0, 4, 6, 10])
-
-        ## Define rewards.
-        rewards = np.ones(grid.size) * -1
-        rewards[0] = 50
-        rewards[4] = -100
-        rewards[6] = 10
-        rewards[10] = 0
-        rewards = rewards.reshape(grid.shape)
-    
-        ## Initialize object.
-        GridWorld.__init__(self, grid, rewards, start, terminal)
-        
-    def __repr__(self):
-        return '<GridWorld | Two-Step Task>'
-        
-    def plot_task(self, grid_color='0.8', reward_color='#2ca02c',
-                   shock_color='#1f77b4', bg='k', ax=None):
-        """Visualize the two-step task environment.
-        
-        Parameters
-        ----------
-        grid_color : tuple | str
-            Color of grid tiles.
-        cliff_color : tuple | str
-            Color of cliff tiles.
-        start_color : tuple | str
-            Color of start tile.
-        end_color : tuple | str
-            Color of end tile.
-            
-        Returns
-        -------
-        axis
-        """
-        
-        ## Prepare map.
-        grid = np.zeros(self.n_states)
-        grid[self.viable_states] = 1
-        grid[[0,6,10]] = 2
-        grid[4] = 3
-        grid = grid.reshape(self.shape)
-        cmap = ListedColormap([bg, grid_color, reward_color, shock_color])
-
-        ## Plot.
-        ax = sns.heatmap(grid, cmap=cmap, cbar=False, linewidths=0.01, linecolor=bg, ax=ax)
         ax.set(xticklabels=[], yticklabels=[])
         
         return ax

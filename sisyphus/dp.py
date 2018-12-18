@@ -64,53 +64,73 @@ class ValueIteration(object):
         self.tol = tol
         self.max_iter = max_iter
         
+    def _compute_value(self, env):
+        
+        V = np.ones(env.n_states) * np.nan
+        for s in env.viable_states:
+            V[s] = np.max(self.Q_[env.T[s].data])
+        return V
+        
     def _compute_policy(self, env):
         
         policy = [env.start]
-        for _ in range(50):
-            s_prime = env.T[policy[-1]].indices
-            v_prime = self.V_[s_prime]
-            policy.append( s_prime[np.argmax(v_prime)] )
-            if policy[-1] in env.terminal: break
+        while True:
+
+            s = policy[-1]
+            if s in env.terminal: break
+            qi = np.argmax(self.Q_[env.T[s].data])
+            s_prime = env.T[s].indices[qi]
+            if s_prime in policy: break
+            policy.append(s_prime)
                 
-        return np.unique(policy)
+        return policy
         
     def _fit(self, env):
         
-        ## Initialize values.
-        V = np.zeros(env.n_states, dtype=float)
-
+        ## Initialize Q-values.
+        Q = np.zeros(env.T.size, dtype=float)
+        
+        ## Extract metadata (ignores terminal transitions).
+        Q_index = np.concatenate([env.T[s].data for s in env.viable_states])
+        S_prime = np.concatenate([env.T[s].indices for s in env.viable_states])
+                            
         ## Main loop.
-        i = 0
-        while i < self.max_iter:
-
+        k = 0
+        while k < self.max_iter:
+            
             ## Make copy.
-            v = V.copy()
+            q = Q.copy()
 
-            for s in env.viable_states:
+            for i, s_prime in zip(Q_index, S_prime):
 
-                ## Compute (discounted) expected value.
-                dEV = env.T[s].data + self.gamma * V[env.T[s].indices]
-
-                ## Compute likelihood of action under policy.
-                theta = self.policy(dEV * self.beta)
-
-                ## Compute new values.
-                V[s] = np.sum(theta * dEV)
+                ## Observe reward.
+                r = env.R[s_prime]
+                
+                ## Observe successor actions.
+                q_prime = Q[env.T[s_prime].data]
+                
+                ## Compute likelihood of successor actions under policy.
+                theta = self.policy(q_prime * self.beta)
+                
+                ## Update Q-value.
+                Q[i] = r + self.gamma * (q_prime @ theta)
 
             ## Compute delta.
-            delta = np.abs(V - v)
+            delta = np.abs(Q - q)
 
             ## Check for termination.
             if np.all(delta < self.tol): break
-            else: i += 1
+            else: k += 1
                     
         ## Store number of iterations.
-        self.n_iter_ = i
+        self.n_iter_ = k
         if self.n_iter_ == self.max_iter: warn('Reached maximum iterations.')
 
-        ## Store values.
-        self.V_ = V
+        ## Store Q-values.
+        self.Q_ = Q
+        
+        ## Store state values.
+        self.V_ = self._compute_value(env)
         
         ## Compute policy.
         self.pi_ = self._compute_policy(env)
