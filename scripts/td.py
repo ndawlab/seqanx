@@ -2,6 +2,8 @@ import numpy as np
 from numba import jit
 from warnings import warn
 
+"""Temporal difference submodule."""
+
 @jit
 def softmax(arr):
     """Scale-robust softmax."""

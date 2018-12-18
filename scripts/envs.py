@@ -31,8 +31,6 @@ class GridWorld(object):
         Number of viable states.
     shape : tuple
         Size of gridworld.
-    R : array, shape = (n_states, 4)
-        State-transition rewards.
     T : array, shape = (n_states, 4)
         One-step transition matrix.
     """
@@ -52,35 +50,34 @@ class GridWorld(object):
         self.states = np.arange(grid.size).reshape(self.shape)
         self.n_states = self.states.size
         
-        viable_states = np.logical_xor(grid.flatten(), np.isin(self.states.flatten(), self.terminal))
-        self.viable_states = np.argwhere(viable_states).squeeze()
+        self.viable_states = self.states[np.where(grid)]
         self.n_viable_states = self.viable_states.size
         
         ## Define one-step transition matrix.
-        self.T = self._one_step_transition_matrix() 
+        self.T = self._one_step_transition_matrix(rewards) 
         
-        ## Define reward matrix.
-        self.R = rewards.flatten()[self.T]
-        self.R[self.terminal] = 0
-        
-    def _one_step_transition_matrix(self):
-        """Returns the one-step transition matrix for the cardinal directions."""
+    def _one_step_transition_matrix(self, rewards):
+        """Returns the sparse CSR one-step transition matrix."""
 
         ## Define grid coordinates.
         nx, ny = self.shape
         rr = np.array(np.meshgrid(np.arange(nx),np.arange(ny)))
         rr = rr.reshape(2,np.product(self.shape),order='F').T
 
-        ## Compute adjacency matrix.
+        ## Compute one-step adjacency matrix.
         A = (cdist(rr,rr)==1).astype(int)
         
-        ## Construct transition matrix.
-        T = np.repeat(np.arange(self.n_states),4).reshape(self.n_states,4)
-        for s in self.viable_states:
-            s_prime, = np.where(A[s])
-            T[s,:s_prime.size] = s_prime
-            
-        return np.sort(T, axis=-1).astype(int)
+        ## Mask terminal states.
+        A[self.terminal] = 0
+        A[self.terminal, self.terminal] = 1
+        
+        ## Store rewards.
+        row, col = A.nonzero()
+        data = rewards.flatten()[col]
+        data[np.in1d(row, self.terminal)] = 0
+        
+        ## Convert to sparse CSR matrix.
+        return csr_matrix((data, (row,col)), A.shape, dtype=float)
 
 class OpenField(GridWorld):
     """Open field task environment.

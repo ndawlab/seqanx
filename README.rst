@@ -4,5 +4,5 @@
 .. image:: https://img.shields.io/github/license/mashape/apistatus.svg
         :target: https://github.com/szorowi1/AnxietySMDP/blob/master/LICENSE
 
-AnxietySMDP
-=======
+SecretFunTimes
+==============
