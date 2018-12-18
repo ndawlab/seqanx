@@ -1,31 +1,17 @@
 import numpy as np
-from numba import jit
-from warnings import warn
+from .utilities import check_params, softmax
 
 """Temporal difference submodule."""
-
-@jit
-def softmax(arr):
-    """Scale-robust softmax."""
-    arr = np.exp(arr - np.max(arr))
-    return arr / arr.sum()
 
 class Agent(object):
         
     def __init__(self, beta, eta, gamma, tau):
         
-        ## Check parameters.
-        if abs(beta) > 50: 
-            warn('Parameter "beta" set very large.')
-        if eta <= 0 or eta > 1: 
-            raise ValueError('Parameter "eta" must be in range (0,1].')        
-        if gamma < 0 or gamma > 1: 
-            raise ValueError('Parameter "gamma" must be in range [0,1].') 
-        
-        self._beta = beta
-        self._eta = eta
-        self._gamma = gamma
-        self._tau = tau
+        self.beta = beta
+        self.eta = eta
+        self.gamma = gamma
+        self.tau = tau
+        check_params(beta=beta, eta=eta, gamma=gamma, tau=tau)
 
     def _select_action(Q, beta=1):
         """Select next action (simulation).
