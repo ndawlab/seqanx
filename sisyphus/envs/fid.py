@@ -1,8 +1,8 @@
 import numpy as np
+from pandas import DataFrame
 from scipy.stats import norm
-from .base import GraphWorld
 
-class FlightInitiationDistance(GraphWorld):
+class FlightInitiationDistance(object):
     """Flight initiation distance environment. 
     
     Parameters
@@ -38,6 +38,9 @@ class FlightInitiationDistance(GraphWorld):
     
     def __init__(self, runway=10, mu=5, sd=1):
         
+        ## Define initial state.
+        start = 0
+        
         ## Define one-step transition matrix.
         n = runway
         T = np.zeros((n+2,n+2)) * np.nan
@@ -49,22 +52,49 @@ class FlightInitiationDistance(GraphWorld):
         ## Define rewards.
         R = np.copy(T)
         R[np.arange(n),np.arange(n)+1] = 0   # Corridor transitions
-        R[:n,n] = np.linspace(1,6,n).round(2)# Safety transition
+        R[:n,n] = np.linspace(1,6,n)         # Safety transition
         R[:n,n+1] = -10                      # Danger transition
         R[[n,n+1],[n,n+1]] = 0               # Terminal states 
         
-        ## Define initial state.
-        start = 0
+        ## Define start / terminal states.
+        self.start = start
+        self.terminal = []
+        for s in range(T.shape[0]):
+            s_prime, = np.nonzero(~np.isnan(T[s]))
+            if np.all(s_prime == s): self.terminal.append(s)
+
+        ## Define state information.
+        self.states = np.arange(T.shape[0])
+        self.n_states = self.states.size
+
+        self.viable_states = self.states[~np.in1d(self.states, self.terminal)]
+        self.n_viable_states = self.viable_states.size
+
+        ## Compute transition probabilities.
+        states = np.arange(runway)
+        cdf = norm(mu, sd).cdf(states)
         
-        ## Initialize object.
-        GraphWorld.__init__(self, T, R, start)
+        ## Iteratively define MDP information.
+        info = []
+        for s, s_prime in np.array(np.where(T==1)).T:
+            
+            Q = dict()
+            
+            ## Store state information.
+            Q["S"] = s
+            Q["S'"] = np.append(s_prime, np.where(T[s] == 0)).astype(int)
+            
+            ## Store reward information.
+            Q["R"] = R[Q["S"], Q["S'"]]
+            
+            ## Store transition information.
+            p = cdf[states==s]
+            Q["T"] = np.append(1-p, np.ones(Q["R"].size-1)*p)
+            
+            info.append(Q)
         
-        ## Update transition probabilities.
-        s = np.arange(runway)
-        cdf = norm(mu, sd).cdf(s)
-        for i in range(self.info.shape[0] - 2):
-            p, = cdf[self.info.loc[i,'S']==s]
-            self.info.at[i,'T'] = np.where(self.info.loc[i,'T'], 1-p, p)
+        ## Store MDP information.
+        self.info = DataFrame(info, columns=("S","S'","R","T"))
             
     def __repr__(self):
-        return '<GraphWorld | Flight Initiation Distance>'
+        return '<GridWorld | Flight Initiation Distance>'
