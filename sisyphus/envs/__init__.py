@@ -1,4 +1,4 @@
-"""Environments submodule"""
+"""MDP environments code"""
 
 from .cliff import CliffWalking
 from .fid import FlightInitiationDistance

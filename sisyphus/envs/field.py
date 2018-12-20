@@ -2,10 +2,10 @@ import numpy as np
 from pandas import DataFrame
 from scipy.spatial.distance import cdist
 
-class OpenField(GridWorld):
+class OpenField(object):
     """Open field task environment."""
     
-    def __init__(self):
+    def __init__(self, epsilon=0):
     
         ## Define gridworld.
         grid = np.ones((11,11), dtype=int)

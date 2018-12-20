@@ -1,3 +1,5 @@
+"""Miscellaneous useful code"""
+
 import numpy as np
 from numba import jit
 from warnings import warn
@@ -7,18 +9,6 @@ def softmax(arr):
     """Scale-robust softmax."""
     arr = np.exp(arr - np.max(arr))
     return arr / arr.sum()
-
-@jit
-def argmax(arr):
-    onehot = np.zeros_like(arr)
-    onehot[np.argmax(arr)] = 1
-    return onehot
-
-@jit
-def argmin(arr):
-    onehot = np.zeros_like(arr)
-    onehot[np.argmin(arr)] = 1
-    return onehot
 
 def check_params(beta=None, eta=None, gamma=None, tau=None, epsilon=None):
     

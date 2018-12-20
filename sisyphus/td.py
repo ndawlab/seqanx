@@ -1,5 +1,5 @@
 import numpy as np
-from .utilities import check_params, softmax
+from .misc import check_params, softmax
 
 """Temporal difference submodule."""
 

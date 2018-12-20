@@ -1,8 +1,8 @@
-import numpy as np
-from .utilities import check_params, argmax, argmin, softmax
-from warnings import warn
+"""Dynamic programming code"""
 
-"""Dynamic programming submodule."""
+import numpy as np
+from .misc import check_params, softmax
+from warnings import warn
 
 class ValueIteration(object):
     """Q-value iteration algorithm.
@@ -11,14 +11,10 @@ class ValueIteration(object):
     ----------
     policy : max | min | softmax (default = softmax)
         Choice policy.
-    transition : fixed | random (default = fixed)
-        Currently ignored.
     beta : float
-        Inverse temperature (used only if policy is softmax).
+        Inverse temperature (ignored if policy not softmax).
     gamma : float
         Discount factor.
-    epsilon : float
-        State transition randomness.
     tol : float, default: 1e-4
         Tolerance for stopping criteria.
     max_iter : int, default: 100
@@ -29,139 +25,93 @@ class ValueIteration(object):
     1. Sutton, R. S., & Barto, A. G. (1998). Reinforcement learning: An introduction. MIT press.
     """
     
-    def __init__(self, policy='softmax', transition='fixed', beta=10, gamma=0.9, 
-                 epsilon=0.01, tol=0.0001, max_iter=100):
+    def __init__(self, policy='softmax', beta=10, gamma=0.9, tol=0.0001, max_iter=100):
 
         ## Define choice policy.
         self.policy = policy
-        if policy == 'max': self._policy = argmax
-        elif policy == 'min': self._policy = argmin
-        elif policy == 'softmax': self._policy = softmax
+        if policy == 'max': self._policy = np.max
+        elif policy == 'min': self._policy = np.min
+        elif policy == 'softmax': self._policy = lambda arr: arr @ softmax(arr * self.beta)
         else: raise ValueError('Policy "%s" not valid!' %self.policy)
-            
-        ## Define transition dynamics.
-        self.transition = transition
-        if transition not in ['fixed','random']: 
-            raise ValueError('Transition "%s" not valid!' %self.policy)
         
         ## Check parameters.
         self.beta = beta
         self.gamma = gamma
-        if self.transition == 'fixed': self.epsilon = 0
-        else: self.epsilon = epsilon
-        check_params(beta=self.beta, gamma=self.gamma, epsilon=self.epsilon)
+        check_params(beta=self.beta, gamma=self.gamma)
         
         ## Set convergence criteria.
         self.tol = tol
         self.max_iter = max_iter        
         
-    def _compute_value(self, env):
-        """Compute state value from Q-table."""
-        
-        ## Initialize values.
-        V = np.ones(env.n_states) * np.nan
-        
-        ## Iteratively look-up argmax.
-        for s in env.viable_states:
-            V[s] = np.max(self.Q_[env.T[s].data])
-            
-        return V
-        
-    def _compute_policy(self, env):
-        """Compute policy from Q-table."""
-        
-        ## Initialize policy from initial state.
-        policy = [env.start]
-        
-        ## Iterately append.
-        while True:
-
-            ## Termination check.
-            s = policy[-1]
-            if s in env.terminal: break
-                
-            ## Observe argmax successor.
-            qi = np.argmax(self.Q_[env.T[s].data])
-            s_prime = env.T[s].indices[qi]
-            
-            ## Terminate on loops. Otherwise append.
-            if s_prime in policy: break
-            policy.append(s_prime)
-                
-        return policy
-        
-    def _fit(self, env):
+    def _q_solve(self, info):
         
         ## Initialize Q-values.
-        Q = np.zeros(env.T.size, dtype=float)
-        
-        ## Extract metadata (ignores terminal transitions).        
-        Q_index, S, S_prime = [], [], []
-        for s in env.viable_states:
-            Q_index = np.append(Q_index, env.T[s].data).astype(int)
-            S = np.append(S, s * np.ones_like(env.T[s].data)).astype(int)
-            S_prime = np.append(S_prime, env.T[s].indices).astype(int)
+        Q = np.zeros(info.shape[0], dtype=float)
+        copy = info.copy()
             
         ## Main loop.
-        k = 0
-        while k < self.max_iter:
+        for k in range(self.max_iter):
             
             ## Make copy.
             q = Q.copy()
+            
+            ## Precompute successor value. 
+            copy['Q'] = q
+            V_prime = copy.groupby('S').Q.apply(self._policy).values
 
-            ## Compute (discounted) expected values.
-            dEV = np.zeros_like(Q)
-            for i, s_prime in zip(Q_index, S_prime):
-
-                ## Observe reward.
-                r = env.R[s_prime]
-
-                ## Observe successor actions.
-                q_prime = Q[env.T[s_prime].data]
-
-                ## Compute likelihood of successor actions under policy.
-                theta = self._policy(q_prime * self.beta)
-
-                ## Compute expected value.
-                dEV[i] = r + self.gamma * (q_prime @ theta)
-                
-            ## Update Q-values.
-            for i, s, s_prime in zip(Q_index, S, S_prime):
-                
-                ## Compute transition likelihood.
-                theta = np.where(env.T[s].indices == s_prime, 1-self.epsilon, self.epsilon)
-                
-                ## Update.
-                Q[i] = dEV[env.T[s].data] @ theta
+            ## Compute Q-values.
+            for i in range(info.shape[0]):
+                                        
+                ## Update Q-value.
+                Q[i] = sum(info.loc[i,"T"] * (info.loc[i,"R"] + self.gamma * V_prime[info.loc[i,"S'"]]))
 
             ## Compute delta.
             delta = np.abs(Q - q)
 
             ## Check for termination.
             if np.all(delta < self.tol): break
-            else: k += 1
-                    
-        ## Store number of iterations.
-        self.n_iter_ = k
-        if self.n_iter_ == self.max_iter: warn('Reached maximum iterations.')
+           
+        return Q, k + 1
+    
+    def _v_solve(self, info):
+        """Compute state value from Q-table."""
+        
+        ## Copy info and append Q-values.
+        copy = info.copy()
+        copy['Q'] = self.Q
+        
+        ## Identify max by state.
+        return copy.groupby('S').Q.max().values
+        
+    def _pi_solve(self, gym):
+        """Compute policy from Q-table."""
+        
+        ## Initialize policy from initial state.
+        policy = [gym.start]
+        
+        ## Iterately append.
+        while True:
 
-        ## Store Q-values.
-        self.Q_ = Q
-        
-        ## Store state values.
-        self.V_ = self._compute_value(env)
-        
-        ## Compute policy.
-        self.pi_ = self._compute_policy(env)
+            ## Termination check.
+            s = policy[-1]
+            if s in gym.terminal: break
                 
-        return self
+            ## Observe argmax successor.
+            ix = np.where(gym.info['S']==s)
+            s_prime = gym.info[ix[np.argmax(self.Q[ix])], ]
             
-    def fit(self, env):        
+            ## Terminate on loops. Otherwise append.
+            if s_prime in policy: break
+            policy.append(s_prime)
+                
+        return policy
+            
+    def fit(self, gym):        
         """Solve for optimal policy.
         
         Parameters
         ----------
-        env : GridWorld instance
+        gym : GridWorld instance
             Simulation environment.
             
         Returns
@@ -169,4 +119,14 @@ class ValueIteration(object):
         self : returns an instance of self.
         """
         
-        return self._fit(env)
+        ## Solve for Q-values.
+        self.Q, self.n_iter = self._q_solve(gym.info)
+        if self.n_iter == self.max_iter: warn('Reached maximum iterations.')
+        
+        ## Solve for values.
+        self.V = self._v_solve(gym.info)
+        
+        ## Compute policy.
+        #self.pi = self._pi_solve(gym)
+                
+        return self
