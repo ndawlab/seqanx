@@ -18,9 +18,9 @@ class OpenField(GraphWorld):
         T = grid_to_adj(self.grid, terminal)
 
         ## Define rewards.
-        R = -1 * np.ones_like(T)              # Majority transitions
-        R[:,57] =  100                        # Reward transition
-        R[:,63] = -100                        # Punishment transition
+        R = 0 * np.ones_like(T)               # Majority transitions
+        R[:,57] =  10                         # Reward transition
+        R[:,63] = -10                         # Punishment transition
         R[terminal,terminal] = 0              # Terminal transitions
         R *= T
 
