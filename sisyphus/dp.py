@@ -86,6 +86,13 @@ class ValueIteration(object):
     def _pi_solve(self, gym):
         """Compute policy from Q-table."""
         
+        ## Precompute optimal q(s,a).
+        copy = gym.info.copy()
+        copy['Q'] = self.Q
+        optimal_ix = copy.groupby('S').Q.transform(max) == copy.Q
+        copy = copy[optimal_ix].copy().reset_index(drop=True)
+        copy["S'"] = copy["S'"].apply(lambda arr: arr[0])
+        
         ## Initialize policy from initial state.
         policy = [gym.start]
         
@@ -96,9 +103,8 @@ class ValueIteration(object):
             s = policy[-1]
             if s in gym.terminal: break
                 
-            ## Observe argmax successor.
-            ix = np.where(gym.info['S']==s)
-            s_prime = gym.info[ix[np.argmax(self.Q[ix])], ]
+            ## Observe successor.
+            s_prime, = copy.loc[copy["S"]==s, "S'"].values
             
             ## Terminate on loops. Otherwise append.
             if s_prime in policy: break
@@ -127,6 +133,6 @@ class ValueIteration(object):
         self.V = self._v_solve(gym.info)
         
         ## Compute policy.
-        #self.pi = self._pi_solve(gym)
+        self.pi = self._pi_solve(gym)
                 
         return self

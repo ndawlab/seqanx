@@ -1,8 +1,8 @@
 import numpy as np
-from pandas import DataFrame
 from scipy.stats import norm
+from .base import GraphWorld
 
-class FlightInitiationDistance(object):
+class FlightInitiationDistance(GraphWorld):
     """Flight initiation distance environment. 
     
     Parameters
@@ -37,9 +37,7 @@ class FlightInitiationDistance(object):
     """
     
     def __init__(self, runway=10, mu=5, sd=1):
-        
-        ## Define initial state.
-        start = 0
+    
         
         ## Define one-step transition matrix.
         n = runway
@@ -56,45 +54,29 @@ class FlightInitiationDistance(object):
         R[:n,n+1] = -10                      # Danger transition
         R[[n,n+1],[n,n+1]] = 0               # Terminal states 
         
-        ## Define start / terminal states.
-        self.start = start
-        self.terminal = []
+        ## Define start/terminal states.
+        start = 0
+        terminal = []
         for s in range(T.shape[0]):
             s_prime, = np.nonzero(~np.isnan(T[s]))
-            if np.all(s_prime == s): self.terminal.append(s)
+            if np.all(s_prime == s): terminal.append(s)
 
-        ## Define state information.
-        self.states = np.arange(T.shape[0])
-        self.n_states = self.states.size
-
-        self.viable_states = self.states[~np.in1d(self.states, self.terminal)]
-        self.n_viable_states = self.viable_states.size
-
-        ## Compute transition probabilities.
+        ## Initialize GraphWorld.
+        GraphWorld.__init__(self, T, R, start, terminal, 0)
+            
+        ## Remove masochistic Q-values (i.e. agent cannot elect to be eaten).
+        sane_ix = [False if arr[0]==-10 else True for arr in self.info['R']]
+        self.info = self.info[sane_ix].reset_index(drop=True)
+            
+        ## Update probability of being eaten.
         states = np.arange(runway)
         cdf = norm(mu, sd).cdf(states)
         
-        ## Iteratively define MDP information.
-        info = []
-        for s, s_prime in np.array(np.where(T==1)).T:
-            
-            Q = dict()
-            
-            ## Store state information.
-            Q["S"] = s
-            Q["S'"] = np.append(s_prime, np.where(T[s] == 0)).astype(int)
-            
-            ## Store reward information.
-            Q["R"] = R[Q["S"], Q["S'"]]
-            
-            ## Store transition information.
-            p = cdf[states==s]
-            Q["T"] = np.append(1-p, np.ones(Q["R"].size-1)*p)
-            
-            info.append(Q)
-        
-        ## Store MDP information.
-        self.info = DataFrame(info, columns=("S","S'","R","T"))
-            
+        for i, row in self.info.iterrows():
+    
+            s, s_prime = row["S"], row["S'"][0]
+            if not s_prime in self.terminal:
+                self.info.at[i,'T'] = np.array([1-cdf[s], 0, cdf[s]])
+                
     def __repr__(self):
-        return '<GridWorld | Flight Initiation Distance>'
+        return '<GraphWorld | Flight Initiation Distance>'

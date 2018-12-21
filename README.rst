@@ -6,8 +6,3 @@
 
 SecretFunTimes
 ==============
-
-TODO
-----
-1) Unify all environments under a central class-object: involves (a) handling non-viable grid states in a grid_to_adj function; and (b) fixing the non-viable states in the for loop (0 vs 1).
-2) Fixing the policy function in dynamic programming. Specifically updating np.roll.
