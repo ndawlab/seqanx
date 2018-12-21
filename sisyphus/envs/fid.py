@@ -36,7 +36,7 @@ class FlightInitiationDistance(GraphWorld):
        Proceedings of the National Academy of Sciences, 115(12), 3186-3191. 
     """
     
-    def __init__(self, runway=10, mu=5, sd=1):
+    def __init__(self, runway=10, mu=5, sd=1, shock=-1):
     
         
         ## Define one-step transition matrix.
@@ -50,8 +50,8 @@ class FlightInitiationDistance(GraphWorld):
         ## Define rewards.
         R = np.copy(T)
         R[np.arange(n),np.arange(n)+1] = 0   # Corridor transitions
-        R[:n,n] = np.linspace(1,6,n)         # Safety transition
-        R[:n,n+1] = -10                      # Danger transition
+        R[:n,n] = np.arange(n) + 1           # Safety transition
+        R[:n,n+1] = shock                    # Danger transition
         R[[n,n+1],[n,n+1]] = 0               # Terminal states 
         
         ## Define start/terminal states.
@@ -65,7 +65,7 @@ class FlightInitiationDistance(GraphWorld):
         GraphWorld.__init__(self, T, R, start, terminal, 0)
             
         ## Remove masochistic Q-values (i.e. agent cannot elect to be eaten).
-        sane_ix = [False if arr[0]==-10 else True for arr in self.info['R']]
+        sane_ix = [False if arr[0]==shock else True for arr in self.info['R']]
         self.info = self.info[sane_ix].reset_index(drop=True)
             
         ## Update probability of being eaten.

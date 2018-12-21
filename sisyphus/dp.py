@@ -1,7 +1,7 @@
 """Dynamic programming code"""
 
 import numpy as np
-from .misc import check_params, softmax
+from .misc import check_params, softmax, betamax
 from warnings import warn
 
 class ValueIteration(object):
@@ -9,7 +9,7 @@ class ValueIteration(object):
     
     Parameters
     ----------
-    policy : max | min | softmax (default = softmax)
+    policy : max | min | softmax | betamax (default = softmax)
         Choice policy.
     beta : float
         Inverse temperature (ignored if policy not softmax).
@@ -32,6 +32,7 @@ class ValueIteration(object):
         if policy == 'max': self._policy = np.max
         elif policy == 'min': self._policy = np.min
         elif policy == 'softmax': self._policy = lambda arr: arr @ softmax(arr * self.beta)
+        elif policy == 'betamax': self._policy = lambda arr: betamax(arr, self.beta)
         else: raise ValueError('Policy "%s" not valid!' %self.policy)
         
         ## Check parameters.
@@ -89,8 +90,7 @@ class ValueIteration(object):
         ## Precompute optimal q(s,a).
         copy = gym.info.copy()
         copy['Q'] = self.Q
-        optimal_ix = copy.groupby('S').Q.transform(max) == copy.Q
-        copy = copy[optimal_ix].copy().reset_index(drop=True)
+        copy = copy.iloc[copy.groupby('S').Q.idxmax().values]
         copy["S'"] = copy["S'"].apply(lambda arr: arr[0])
         
         ## Initialize policy from initial state.

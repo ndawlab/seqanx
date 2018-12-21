@@ -10,6 +10,11 @@ def softmax(arr):
     arr = np.exp(arr - np.max(arr))
     return arr / arr.sum()
 
+@jit
+def betamax(arr, beta):
+    """Beta-pessimism."""
+    return beta * np.max(arr) + (1 - beta) * np.min(arr)
+
 def check_params(beta=None, eta=None, gamma=None, tau=None, epsilon=None):
     
     if beta is not None and abs(beta) > 50: 
