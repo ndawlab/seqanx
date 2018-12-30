@@ -1,6 +1,7 @@
 """Code associated with paper"""
 
-from .envs import (CliffWalking, FlightInitiationDistance, 
-                   FreeChoice, OpenField)
+from .envs import (CliffWalking, FlightInitiationDistance, FreeChoice, 
+                   OpenField, DecisionTree)
 from .dp import (ValueIteration)
 from .td import (ModelFree)
+from .misc import (softmax,betamax)
