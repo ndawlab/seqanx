@@ -1,4 +1,4 @@
-"""Miscellaneous useful code"""
+"""Miscellaneous functions"""
 
 import numpy as np
 from numba import jit
@@ -14,6 +14,10 @@ def softmax(arr):
 def betamax(arr, beta):
     """Beta-pessimism."""
     return beta * np.max(arr) + (1 - beta) * np.min(arr)
+
+def categorical(arr):
+    """Categorical distribution RNG."""
+    return np.argmax(np.random.multinomial(1,arr))
 
 def check_params(beta=None, eta=None, gamma=None, tau=None, epsilon=None):
     

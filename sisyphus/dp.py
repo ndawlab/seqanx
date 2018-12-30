@@ -1,4 +1,4 @@
-"""Dynamic programming code"""
+"""Dynamic programming module"""
 
 import numpy as np
 from .misc import check_params, softmax, betamax
