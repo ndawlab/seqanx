@@ -1,0 +1,182 @@
+\documentclass[11pt]{article} % For LaTeX2e
+\usepackage{manuscript,palatino}
+\usepackage{graphicx}
+\usepackage{amsfonts,amsmath}
+\usepackage{algorithm, algpseudocode}%
+
+\title{something something about anxiety}
+
+\author{
+Samuel Zorowitz \\
+Princeton Neuroscience Institute\\
+Princeton University\\
+Princeton, NJ 08540 \\
+\texttt{zorowitz@princeton.edu} \\
+\And
+Nathaniel Daw \\
+Princeton Neuroscience Institute\\
+Princeton University\\
+Princeton, NJ 08540 \\
+\texttt{ndaw@princeton.edu} \\
+}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to \LaTeX{} to determine where to break
+% the lines. Using \AND forces a linebreak at that point. So, if \LaTeX{}
+% puts 3 of 4 authors names on the first line, and the last on the second
+% line, try using \AND instead of \And before the third author name.
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+To be filled in
+\end{abstract}
+
+\keywords{
+reinforcement learning; avoidance; anxiety
+}
+
+\startmain % to start the main 1-4 pages of the submission.
+
+\section{Introduction}
+
+
+\section{Methods}
+
+\subsection{Markov Decision Processes}
+
+Here, we briefly review the formalism of Markov decision processes (MDPs), which
+provide the foundation for our results. For more complete treatments of the
+subject, see Sutton \& Barto (1998, 2018) and Bertsekas \& Tsitsiklis (1996).
+
+A MDP is defined by a set of states, $S$, a set of actions, $A$, a reward
+function, $R(s,a)$ over state/action pairs, and a state transition distribution,
+$P(s'|s,a)$, where $a$ denotes a chosen action. States and rewards occur
+sequentially according to these one-step functions, driven by a series of
+actions; the goal is to learn to choose a probabilistic policy over actions,
+denoted by $\pi$, that maximizes the value function, $V^\pi(s)$, defined as the
+expected cumulative discounted reward:
+
+$$ V^\pi(s) = \mathbb{E} \left[ \sum^{\infty}_{k=0} \gamma^k R_{t+k} | S_t = s \right] $$
+
+Here, $\gamma$ is a parameter controlling temporal discounting. The value function
+can also be defined recursively as the sum of the immediate reward of the action
+chosen in that state, $R(s, a)$, and the value of its successor state $s’$,
+averaged over possible actions, $a$, and transitions that would occur if the agent
+chose according to $\pi$:
+
+$$ V^\pi(s) = \sum_a \pi(a|s) \left[ R(s,a) + \sum_{s'} P(s'|s,a) \gamma V^\pi (S') \right] $$
+
+The value function under the optimal policy is given by:
+
+$$ V^*(s) = \max_a \mathbb{E} \left[ \sum^{\infty}_{k=0} \gamma^k R_{t+k} | S_t = s \right] $$
+
+$$ = \max_a \left[ R(s,a) + \sum_{s'} P(s'|s,a) \gamma V^\pi (S') \right] $$
+
+Knowledge of the value function can help to guide choices. For instance, we can
+define the state-action value function as the value of choosing action $a$ and
+following $\pi$ thereafter:
+
+$$ Q^\pi(s,a) = \mathbb{E} \left[ \sum^{\infty}_{k=0} \gamma^k R_{t+k} | S_t = s \right] $$
+
+$$ = R(s,a) + \sum_{s'} P(s'|s,a) \gamma V^\pi (S') $$
+
+Then at any state one could choose the action that maximizes $Q^\pi(s,a)$. Formally
+this defines a new policy, which is as good or better than the baseline policy
+$\pi$; analogously, Eq 2 can be used to define the optimal state-action value
+function, the maximization of which selects optimal actions. Note that it is
+possible to write a recursive definition for $Q$ in the same manner as Eq 1, and
+work directly with the state-action values, rather than deriving them indirectly
+from $V$.
+
+\subsection{Robust Control}
+
+To create the symptoms of anxiety, we need a loss of control. This can come in
+two forms. First is through the state transition distribution, $P(s'|s,a)$.
+Normally, we assume the world is deterministic; in other words, an agent's chosen
+action, $a$ leads the agent to the desired successor state, $s'$. In a stochastic
+environment, however, an agent may instead transition to an undesired state, $s^*$.
+
+Alternately, an agent may choose optimally in the present but may be uncertain of
+its choice control in the future. In such a case, we deviate from the optimal
+policy in the future. We can adopt a different function. There are a number to
+choose from (Garcia \& Fernandez, 2015). Here we adopt the beta-pessimism criterion
+(Gaskett, 2003):
+
+$$ V(s') = \beta \max_{a'} Q(s',a') + (1 - \beta) \min_{a'} Q(s',a') $$
+
+where $\beta$ controls the degree of pessimism. When $\beta = 1$, an agent expects
+complete control to choose the best action (best-case criterion); when $\beta = 0$,
+an agent expects the  worst future case; and when $\beta = 0.5$, an agent expects
+randomness. (We are not committed to this particular instantiation; it is simply
+a convenient notation. Other parameterizations work equally well, see appendix.)
+
+\subsection{Simulations}
+
+In some instances, we solve for Q-values and state values directly through value
+iteration. This is a form of Dynamic Programming. In other instances, we estimate
+these terms through temporal difference learning. We use beta-pessimism (betamax)
+learning for both. We use the former to solve for final (infinite horizon) values
+and the latter to identify finite horizon values. We explain when we use both.
+
+\section{Results}
+
+\subsection{Pessimistic Inference}
+
+\subsection{Avoidance}
+
+\subsection{Approach-Avoidance Conflict}
+
+\subsection{Planning}
+
+\subsection{Free Choice Premium}
+
+\subsection{Longitudinal Progression}
+
+
+\section{Appendix}
+\subsection{Algorithms}
+
+\begin{algorithm}
+  \caption{Value Iteration}
+
+  \State Algorithm parameter: a small threshold $\theta > 0$ determining accuracy of estimation
+  \State Initialize $V(s)$, for all $s \in S$ arbitrarily, except that $V(terminal) = 0$
+  \State
+  \While{$\Delta > \theta$}
+    \State $\Delta \leftarrow 0$
+    \Loop \ for each $s \in S$
+      \State $v \leftarrow V(s)$
+      \State $ V(s) = \max_a \sum_{s',r} p(s',r|s,a) \left[ r + \gamma V(s') \right] $
+      \State $\Delta \leftarrow \max(\Delta, |v - V(s)|)$
+    \EndLoop
+  \EndWhile
+
+\end{algorithm}
+
+\begin{algorithm}
+  \caption{Betamax Temporal Difference Learning}
+
+  \State Algorithm parameters: step size $\eta \in (0, 1)$, small $\epsilon > 0$
+  \State Initialize $Q(s,a)$, for all $s \in S$, $a \in A$ arbitrarily, except that $Q(terminal,\cdot) = 0$
+  \State
+  \Loop \ for each episode
+    \State Initialize $S$
+    \While{$S \notin S(terminal)$}
+      \State Choose $A$ from $S$ using policy derived from $Q$
+      \State Take action $A$, observe $R, S$
+      \State $Q(S, A) \leftarrow Q(S, A) + \eta \left[ R + \gamma \max_a Q(S',a) − Q(S, A) \right] $
+      \State $S \leftarrow S'$
+    \EndWhile
+  \EndLoop
+
+\end{algorithm}
+
+\end{document}
