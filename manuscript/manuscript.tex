@@ -4,7 +4,7 @@
 \usepackage{amsfonts,amsmath}
 \usepackage{algorithm, algpseudocode}%
 
-\title{something something about anxiety}
+\title{Anxiety: a decision-theoretic perspective}
 
 \author{
 Samuel Zorowitz \\
@@ -129,6 +129,46 @@ and the latter to identify finite horizon values. We explain when we use both.
 \section{Results}
 
 \subsection{Pessimistic Inference}
+
+First and foremost, pathological anxiety is associated with pessimistic expectations
+about the probability and cost of future negative events (Grupe \& Nitschke, 2013;
+Bishop \& Gagne, 2018). In fear conditioning, individuals with anxiety are more
+likely to exhibit increased threat appraisal for safety signals (CS-) and the
+extinguished fear cue (CS+) (Lissek et al. 2005; Duits et al., 2015). In considering
+hypothetical future negative outcomes, individuals with anxiety are more likely
+to evaluate negative outcomes as more likely and their consequences more severe
+(pick a few references).
+
+Importantly, in the clinical literature, pathological anxiety is also associated
+with a lack of perceived control (Gallagher et al., 2014). Studies suggest that
+this belief mediates anxiety (ref?). This can come in whatever form.
+
+In the first series of simulations, we show directly how lack of perceived control
+can directly account for pessimistic inference. In the open field environment
+(Figure 1a), an agent navigates a simple grid-world. The world consists of almost
+entirely of empty tiles, except for two which yield a reward and punishment,
+respectively.
+
+Under complete control (objective or perceived), an agent in this environment is
+under no threat despite the presence of an aversive state. This is simply because,
+in a full controllable world, a (non-masochistic) agent is never forced to interact
+with the aversive state. When this control breaks down -- through a stochastic
+world or a distrust of future competency -- an agent can no longer guarantee it
+will never encounter the aversive state. In such a scenario, the negative value
+back-propagates to its predecessor states through the recursive formulas defined
+above. The result is an environment that appears worse (i.e. less positive) than
+it otherwise would.
+
+We shoe this above. Using value iteration. Show it for best-case scenario. Show
+it for expected random. Show it for worst-case scenario.
+
+\begin{figure}
+  \centerline{%
+    \resizebox{1.0\textwidth}{!}{\includegraphics[trim={0 0 0 0},clip]{../figures/01_field.png}}%
+  }
+  \caption{\textbf{Open Field Environment}}
+  \par Oooh so pretty.
+\end{figure}
 
 \subsection{Avoidance}
 
