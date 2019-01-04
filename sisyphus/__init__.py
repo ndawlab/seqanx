@@ -7,3 +7,4 @@ from .envs import (CliffWalking, FlightInitiationDistance, FreeChoice,
 from .dp import (ValueIteration)
 from .td import (ModelFree)
 from .misc import (softmax,betamax)
+from .viz import (plot_policy, plot_cliff)
