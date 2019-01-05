@@ -1,7 +1,7 @@
-"""MDP environments code"""
+"""MDP environments submodule"""
 
-from .choice import FreeChoice
-from .cliff import CliffWalking
-from .fid import FlightInitiationDistance
-from .field import OpenField
-from .tree import DecisionTree
+from ._choice import FreeChoice
+from ._cliff import CliffWalking
+from ._fid import FlightInitiationDistance
+from ._field import OpenField
+from ._tree import DecisionTree

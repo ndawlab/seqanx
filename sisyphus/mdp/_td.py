@@ -1,7 +1,7 @@
 """Temporal difference module"""
 
 import numpy as np
-from .misc import check_params, softmax, betamax, categorical
+from ._misc import check_params, softmax, betamax, categorical
 
 def greedy_choice(arr, epsilon):
     if np.random.binomial(1,1-epsilon): 

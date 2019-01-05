@@ -2,9 +2,6 @@
 
 __version__ = '0.1'
 
-from .envs import (CliffWalking, FlightInitiationDistance, FreeChoice, 
-                   OpenField, DecisionTree)
-from .dp import (ValueIteration)
-from .td import (ModelFree)
-from .misc import (softmax,betamax)
-from .viz import (plot_policy, plot_cliff)
+from . import envs
+from . import mdp
+from . import viz

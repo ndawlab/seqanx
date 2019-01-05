@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.stats import norm
-from .base import GraphWorld
+from ._base import GraphWorld
 
 class DecisionTree(GraphWorld):
     """Variant of the decision tree game.

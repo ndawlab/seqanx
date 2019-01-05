@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.stats import norm
-from .base import GraphWorld
+from ._base import GraphWorld
 
 class FreeChoice(GraphWorld):
     """Instrumental variant of the Free Choice task.

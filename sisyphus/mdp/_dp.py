@@ -1,7 +1,7 @@
 """Dynamic programming module"""
 
 import numpy as np
-from .misc import check_params, softmax, betamax
+from ._misc import check_params, softmax, betamax
 from warnings import warn
 
 class ValueIteration(object):

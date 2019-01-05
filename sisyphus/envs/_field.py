@@ -1,5 +1,5 @@
 import numpy as np
-from .base import GraphWorld, grid_to_adj
+from ._base import GraphWorld, grid_to_adj
 
 class OpenField(GraphWorld):
     """Open field task environment."""
