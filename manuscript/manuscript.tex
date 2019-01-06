@@ -43,10 +43,50 @@ To be filled in
 reinforcement learning; avoidance; anxiety
 }
 
-\startmain % to start the main 1-4 pages of the submission.
+\startmain
 
 \section{Introduction}
+Many psychiatric disorders involve distortions in models of the external world
+and, correspondingly, aberrations of learning and decision making. As a normative
+framework, decision theory allows us to describe and pose quantita­tive questions
+about optimal and approximately optimal choice behavior \cite{DayanDaw2008} and
+is, therefore, a critical tool for modeling, understanding, and predicting the
+psychological and neurobiological mechanisms responsible for the abnormalities
+observed in psychiatric behavior \cite{HuysDawDayan2015}. Many recent investigations
+employing this approach have provided important insights into psychiatric symptoms,
+including anhedonia in major depression \cite{Rutledge2017}, mood instability
+in bipolar disorder \cite{EldarNiv2015, EldarDolanNiv2016},  habitual decision
+making in disorders of compulsivity \cite{gillan2016}, and hallucinations in
+schizophrenia \cite{powers2017, corlett2018}.
 
+Anxiety disorders (generalized anxiety disorder, social anxiety disorder, panic
+disorder, obsessive-compulsive disorder) represent the most common family of
+psychiatric disorders (citation). Despite the differences in the content of worry,
+all anxiety disorders share two core features: pessimistic inference and excessive
+avoidance. Pessimistic inference describes a tendency to appraise threatening
+situations as more frequent and/or more severe than they objectively are. This has
+been reliably observed experimentally, as in fear conditioning wherein individuals
+with anxiety exhibit exaggerated fear towards safe cues (CS-) and extinguished
+threatening cues \cite{lissek2005, Duits2015}, and clinically, through self-report
+(pick 3 citaitons). Excessive avoidance describes the corresponding tendency for
+individuals with anxiety to consistently flee or avoid threatening situations.
+Avoidance is often chosen even at the expense of potential reward (approch-avoidance
+conflict), and is frequently a major impediment to recovery \cite{Arnaudova2017}.
+
+Recent studies have attempted to provide some computational models of this behavior
+\cite{Moutoussis2008, Maia2010}. For example, \cite{Maia2010} was able to show
+how reinforcement learning could explain sustained avoidance in the absence of
+repeated reinforcement, observed in rodents \cite{servatius2008} and something
+not explained by two-factor theory \cite{Krypotos2015}. As has been discussed
+elsewhere \cite{Moutoussis2017}, such accounts only explain the maintenance of
+avoidance in short timescales, but do not explain why resistant to change and
+why they do not go away in general. Such theories also do not explain the magnitude
+of pessimistic inference, or the fear generalization. A broader account is needed.
+
+In this article, we put forward a decision theoretic explanation of the core
+symptoms of anxiety. In sequential decision environments, we show how a loss of
+optimistic inference results in pessimistic inference, chronic avoidance, and
+generalization of fear.
 
 \section{Methods}
 
@@ -180,7 +220,11 @@ it for expected random. Show it for worst-case scenario.
   \par You better watch out YOU BETTER WATCH OUT
 \end{figure}
 
+Discuss similar observations in other tasks (Bach et al., 2014; Sheynin et al., 2015).
+
 \subsection{Approach-Avoidance Conflict}
+
+Discuss Bach behavioral inhibition.
 
 \subsection{Planning}
 
@@ -188,6 +232,77 @@ it for expected random. Show it for worst-case scenario.
 
 \subsection{Longitudinal Progression}
 
+\section{Discussion}
+
+In this article, we showed...
+
+Discuss previous computational approaches: This has also been previously been
+investigated in previous computational modeling \cite{Huys2009}. There
+the authors found that beliefs about a lack of controllability, mechanistically
+modeled as corrupted priors about action-outcome contingencies, found deficient
+learning in novel environments. The present results are no doubt related, but
+address a different environment and a different behavior.
+
+We discussed two mechanisms by which negative values can spread. There is a third
+that we did not address here: that of the state itself. Here we assumed that states
+were fully observable; in other words, there was no uncertainty about the state
+an agent was currently occupying. In partially-observable Markov decision problems,
+the state itself must be inferred from external and internal variables. This is
+yet another means by which bad value can spread if undue likelihood is granted
+to undesirable or aversive states. This ideas has previously been proposed to
+explain some symptoms in anxiety \cite{Paulus2012}, and not without good reason.
+Anxiety disorders involve negatively biased interpretation of ambiguous percepts
+\cite{Hartley2012}, which may result in aberrant planning and increased avoidance
+for similar reasons to those described above. This is an area for future research.
+
+In this article, we have explored a computational principle of approach and
+avoidance learning in sequential decision environments. We have not discussed,
+however, the particular psychological or neurobiological mechanisms by which this
+sort of learning may take place. This issue has been discussed in detail elsewhere
+\cite{Bishop2018}, but we briefly discuss a few possibilities here. Mechanically,
+we understand that complex decision problems are solved by mental processes that
+exist on a spectrum between model-based and model-free (Daw et al., 2005). The
+difference between these two families of methods hinges on the reliance of an
+internal model of the world used to make predictions about expected long-run
+outcomes of particular choices.
+
+For model-based decision making, one possibility is biased planning. In large
+state spaces, online sequential decision making suffers from the curve of
+dimensionality: in planning a series of actions to take, comparing between
+multiple options rapidly becomes computationally intractable when the number of
+options and depth of search becomes even moderately large. Thus, heuristics for
+reducing the size of this search can be useful. Biased pruning of search paths
+(such as immediately discarding paths that require some minor loss in pursuit of
+larger gains) may result in maladaptive decision making (Huys et al., 2012).
+Alternately, if planning relies on internal sampling from previously experienced
+episodes in order to make predictions about future value, then biased sampling
+ may similarly result in maladaptive decision making. Recent work has shown how
+ finite sampling during planning can result in risk aversion and the overrepresentation
+ of low probability but strongly negative outcomes (Lieder et al., 2018). Such a
+ mechanism is prima facie in line with results showing the availability in memory
+ of negative outcomes being higher for patients with anxiety (Borkovec et al., 1999;
+ Miranda and Mennin, 2007).
+
+Within the realm of model-free decision making, several studies have found evidence
+suggesting increased learning rates for negative reward prediction errors in
+individuals with elevated levels of anxiety \cite{Aylward, Huang2017, Harle2017
+garrett2018}. Though an asymmetry in sensitivity to
+positive and negative reward prediction errors bears superficial similarity, for
+the reasons described above merely attending more to negative information does not
+necessarily predict increased avoidance insofar that avoidance can successfully
+isolate negative outcomes. One possibility, and topic of future research, is how
+prior beliefs about the reward statistics of the current environment dictate
+learning rates. A second possibility is prioritized replay (Russek et al., 2017;
+Mattar and Daw, 2018). Offline replay of previous experiences (through hippocampal
+mechanisms) are known to facilitate learning. It has been proposed that biased
+replay could bias value estimates (Gagne et al., 2018). This is another exciting
+area for future research.
+
+
+\section{References}
+
+\bibliographystyle{authordate1}
+\bibliography{citations}
 
 \section{Appendix}
 \subsection{Algorithms}
