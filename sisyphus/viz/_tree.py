@@ -44,11 +44,17 @@ def _draw_node_labels(ax, xpos, ypos, fontsize=14):
         
     return ax
 
-def _draw_edges(ax, xpos, ypos, edges, color='0.5'):
+def _draw_edges(ax, xpos, ypos, edges, linewidth=None, color='0.5'):
     """Draw decision tree edges. See plot_decision tree for details."""
     
-    for i, j in edges:
-        ax.plot([xpos[i], xpos[j]], [ypos[i], ypos[j]], color=color, zorder=0)
+    ## Define line widths.
+    if linewidth is None: linewidth = np.repeat(0.5, len(edges))
+    assert np.equal(len(linewidth), len(edges)) 
+    linewidth = Normalize(0, 1)(np.array(linewidth)) * 5 + 0.5
+        
+    for i, (s1, s2) in enumerate(edges):
+        ax.plot([xpos[s1], xpos[s2]], [ypos[s1], ypos[s2]], color=color, 
+                lw=linewidth[i], zorder=0)
 
     return ax
 
@@ -80,7 +86,8 @@ def _draw_path_sums(ax, xpos, linewidth=5, fontsize=14):
     return ax
     
 def plot_decision_tree(ax, s=1000, color=None, cmap=None, vmin=None, vmax=None, alpha=1.0, 
-                       node_width=None, node_labels=False, edge_labels=False, path_sums=False):
+                       node_width=None, node_labels=False, edge_labels=False, edge_width=None, 
+                       path_sums=False):
 
     ## Define decision tree.
     T = np.zeros((15,15))
@@ -100,7 +107,7 @@ def plot_decision_tree(ax, s=1000, color=None, cmap=None, vmin=None, vmax=None, 
     ypos = [3, 2, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
     
     ## Draw DAG.
-    ax = _draw_edges(ax, xpos, ypos, edges=edges)
+    ax = _draw_edges(ax, xpos, ypos, edges=edges, linewidth=edge_width)
     ax = _draw_nodes(ax, xpos, ypos, s=s, color=color, cmap=cmap, vmin=vmin, vmax=vmax,
                         alpha=alpha, linewidth=node_width)
     
