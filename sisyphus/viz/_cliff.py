@@ -48,7 +48,9 @@ def plot_cliff(ax, cbar=False, viable='0.8', cliff='0.1', start='#1f77b4', end='
     ax.hlines(np.arange(1,11),0,12,lw=0.1)
     
     ## Add text.
-    ax.text(0.5,10.5,'S',ha='center',va='center',fontsize=18,weight='semibold')
-    ax.text(11.5,10.5,'G',ha='center',va='center',fontsize=18,weight='semibold')
+    ax.annotate('S', (0, 0), (0.041, 0.04), 'axes fraction', ha='center', 
+                va='center', fontsize=18, weight='semibold')
+    ax.annotate('G', (0, 0), (0.954, 0.04), 'axes fraction', ha='center', 
+                va='center', fontsize=18, weight='semibold')
     
     return ax
