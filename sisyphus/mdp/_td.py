@@ -1,16 +1,16 @@
 """Temporal difference module"""
 
 import numpy as np
-from ._misc import check_params, softmax, betamax, categorical
+from copy import deepcopy
+from ._misc import check_params, betamax, categorical
+from ._misc import softmax as _softmax
 
-def greedy_choice(arr, epsilon):
-    if np.random.binomial(1,1-epsilon): 
-        return np.argmax(arr)
-    else: 
-        return np.random.choice(np.arange(len(arr)),1,replace=False)
+def egreedy(arr, epsilon):
+    if np.random.binomial(1,1-epsilon): return np.argmax(arr)
+    else: return np.random.choice(np.arange(len(arr)),1,replace=False)[0]
     
-def soft_choice(arr, beta):
-    theta = softmax(arr * beta)
+def softmax(arr, beta):
+    theta = _softmax(arr * beta)
     return categorical(theta)  
 
 class ModelFree(object):
@@ -38,7 +38,7 @@ class ModelFree(object):
         self.policy = policy
         if policy == 'max': self._policy = np.max
         elif policy == 'min': self._policy = np.min
-        elif policy == 'softmax': self._policy = lambda arr: arr @ softmax(arr * self.beta)
+        elif policy == 'softmax': self._policy = lambda arr: arr @ _softmax(arr * self.beta)
         elif policy == 'betamax': self._policy = lambda arr: betamax(arr, self.beta)
         else: raise ValueError('Policy "%s" not valid!' %self.policy)
         
@@ -51,6 +51,10 @@ class ModelFree(object):
     def __repr__(self):
         return '<Model Free Agent>'
             
+    def copy(self):
+        """Return copy of agent."""
+        return deepcopy(self)
+        
     def _run_episode(self, Q, gym, choice, epsilon, n_steps=100):
         
         ## Define starting state.
@@ -64,7 +68,8 @@ class ModelFree(object):
                 
             ## Select action.
             copy['Q'] = Q.copy()
-            a = copy[copy.S==s].index[choice(copy.loc[copy.S==s,'Q'], epsilon)]
+            i = choice(copy.loc[copy.S==s,'Q'].values, epsilon)
+            a = copy[copy.S==s].index[i]
                         
             ## Observe next state and reward.
             i = categorical(copy.loc[a,'T'])
@@ -136,24 +141,22 @@ class ModelFree(object):
         if choice == 'greedy': 
 
             ## Define choice rule.
-            _choice = greedy_choice
+            choice = egreedy
 
             ## Define schedule.
-            if schedule is None: 
-                schedule = 0.05 * np.ones(100)
-            else: 
-                assert np.all(np.logical_and(schedule >= 0, schedule <= 1))
+            if schedule is None:  schedule = 0.05 * np.ones(100)
+            elif isinstance(schedule, (int, float)): schedule = np.array([schedule])
+            assert np.all(np.logical_and(schedule >= 0, schedule <= 1))
                 
         elif choice == 'softmax':
 
             ## Define choice rule.
-            _choice = soft_choice
+            choice = softmax
 
             ## Define schedule.
-            if schedule is None: 
-                schedule = 10.0 * np.ones(100)
-            else: 
-                assert np.all(np.logical_and(schedule >= -50, schedule <= 50))
+            if schedule is None: schedule = 10.0 * np.ones(100)
+            elif isinstance(schedule, (int, float)): schedule = np.array([schedule])
+            assert np.all(np.logical_and(schedule >= -50, schedule <= 50))
             
         else: 
             raise ValueError('Choice "%s" not valid!' %choice)
@@ -165,7 +168,7 @@ class ModelFree(object):
             Q = self.Q.copy()
             
         ## Solve for Q-values.
-        for e in schedule: Q = self._run_episode(Q, gym, _choice, e, n_steps)
+        for e in schedule: Q = self._run_episode(Q, gym, choice, e, n_steps)
         self.Q = Q
         
         ## Solve for values.

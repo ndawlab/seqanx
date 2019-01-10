@@ -20,14 +20,6 @@ Princeton, NJ 08540 \\
 \texttt{ndaw@princeton.edu} \\
 }
 
-% The \author macro works with any number of authors. There are two commands
-% used to separate the names and addresses of multiple authors: \And and \AND.
-%
-% Using \And between authors leaves it to \LaTeX{} to determine where to break
-% the lines. Using \AND forces a linebreak at that point. So, if \LaTeX{}
-% puts 3 of 4 authors names on the first line, and the last on the second
-% line, try using \AND instead of \And before the third author name.
-
 \newcommand{\fix}{\marginpar{FIX}}
 \newcommand{\new}{\marginpar{NEW}}
 
@@ -147,8 +139,8 @@ environment, however, an agent may instead transition to an undesired state, $s^
 Alternately, an agent may choose optimally in the present but may be uncertain of
 its choice control in the future. In such a case, we deviate from the optimal
 policy in the future. We can adopt a different function. There are a number to
-choose from (Garcia \& Fernandez, 2015). Here we adopt the beta-pessimism criterion
-(Gaskett, 2003):
+choose from \cite{Garcia2015}. Here we adopt the beta-pessimism criterion
+\cite{Gaskett2003}:
 
 $$ V(s') = \beta \max_{a'} Q(s',a') + (1 - \beta) \min_{a'} Q(s',a') $$
 
@@ -207,22 +199,53 @@ it for expected random. Show it for worst-case scenario.
     \resizebox{1.0\textwidth}{!}{\includegraphics[trim={0 0 0 0},clip]{../figures/01_field.png}}%
   }
   \caption{\textbf{Open Field}}
-  \par remember to add parameters
+  \par Current parameters: Reward = 10, Shock = -10, gamma = 0.95.
 \end{figure}
 
 \subsection{Avoidance}
+
+1. Open with definition of avoidance. Follow \cite{Arnaudova2017} in definitions, i.e.
+the basic idea that avoidance is the distancing of oneself from real or perceived
+threat.
+2. Describe cliff walking environment. Need to discuss that we are expanding
+on the result originally described in \cite{Gaskett2003}.
+3. With increasing pessimism, agent further distances self from cliff. Note that
+this is the optimal policy under those set of beliefs about the world.
+4. This can explain how avoidance is maintained. Even with luck and chance in the
+the world, these sets of beliefs actually lead to and sustain these behavioral
+policies.
+
+In discussion of section, need to also mention other relevant findings. Specifically,
+need to describe the approach-avoidance findings of Bach (2014, 2017) and the
+complex task findings of Sheynin et al., 2015.
 
 \begin{figure}
   \centerline{%
     \resizebox{1.0\textwidth}{!}{\includegraphics[trim={0 0 0 0},clip]{../figures/02_cliff.png}}%
   }
   \caption{\textbf{Cliff Walking}}
-  \par remember to add parameters
+  \par Cliff = -100, Cost = -1, gamma = 0.99
 \end{figure}
 
-Discuss similar observations in other tasks (Bach et al., 2014; Sheynin et al., 2015).
-
 \subsection{Approach-Avoidance Conflict}
+
+In the third section of the results, we discuss approach-avoidance conflict.
+This covers tasks such as the balloon analog risk task (BART) and the flight
+initiation distance task, which has been found to correlate with anxiety. The
+hallmark of these sorts of tasks is the tradeoff between increased reward vs.
+the possibility of an aversive outcome (e.g. balloon pop, predation). Discuss
+previous findings, i.e. earlier leave times.
+
+We can show that this is easily explained by our model. A lack of belief of
+future control predicts exiting while things are still good. (We see this in
+Figure 3). The optimal policy in these environments is an earlier leaving time.
+
+This can also be used to explain behavioral inhibition \cite{bach2015, khemka2017}.
+The idea is slightly different than what is advocated. The claim here is that
+in anxious individuals, the Q-values should be closer together, and thus there
+should be longer waiting time. This requires demonstrating that decisions are
+not made in advance; only at the time of decision making. This is something
+I think we will have to argue. (Need to double check the literature here.)
 
 \begin{figure}
   \centerline{%
@@ -232,9 +255,10 @@ Discuss similar observations in other tasks (Bach et al., 2014; Sheynin et al., 
   \par remember to add parameters
 \end{figure}
 
-Discuss Bach behavioral inhibition.
-
 \subsection{Planning}
+
+Basically reviewing the arguments of Huys here \cite{Huys2012, Lally2017}.
+Need to get facts straight before going through all of this.
 
 \begin{figure}
   \centerline{%
