@@ -243,24 +243,44 @@ negative, on average, the state-space grows.
 In the breakdown of perceived control then, negative states can grow worse (i.e.
 more predictive of future negative outcome) and otherwise positive states can too.
 This occurs as a simple result that if control not guaranteed, cannot guaranteed
-bad things wont happen. 
+bad things wont happen.
 
 \subsection{Avoidance}
 
-1. Open with definition of avoidance. Follow \citep{Arnaudova2017} in definitions, i.e.
-the basic idea that avoidance is the distancing of oneself from real or perceived
-threat.
-2. Describe cliff walking environment. Need to discuss that we are expanding
-on the result originally described in \citep{Gaskett2003}.
-3. With increasing pessimism, agent further distances self from cliff. Note that
-this is the optimal policy under those set of beliefs about the world.
-4. This can explain how avoidance is maintained. Even with luck and chance in the
-the world, these sets of beliefs actually lead to and sustain these behavioral
-policies.
+A second symptom central to all anxiety disorders is avoidance \citep{dsm5,
+Krypotos2015, Arnaudova2017}, or actions taken to increase or maintain the temporal,
+physical and/or mental distance between an individual and a threatening situation.
+Although avoidance is a natural response to danger, excessive avoidance as is
+observed in anxiety disorders is can be highly disruptive to everyday functioning
+\cite{Salter2004} and may work to sustain anxious appraisals and behavior. For
+example, an individual with social anxiety may avoid attending large social events
+for fear of public embarrassment only to never learn that such worry is not justified.
 
-In discussion of section, need to also mention other relevant findings. Specifically,
-need to describe the approach-avoidance findings of Bach (2014, 2017) and the
-complex task findings of Sheynin et al., 2015.
+In the laboratory, avoidance has been measured in a variety of ways. In animal
+models of anxiety, anxious rodents are found to exhibit avoidance learning more
+quickly and maintain avoidance for longer \citep{servatius2008}. In studies of
+human avoidance, anxiety has been found to correlate with the maintenance of
+increased distance from threat, such as virtual predators \citep{Bach2014, Bach2017,
+Sheynin2014}.
+
+% Arnaudova2017 makes reference to some spider approach studies that might be
+% interesting to try and track down. Essential idea is that even though
+% participants are totally safe, may not touch the glass. The task is the
+% behavioral avoidance task. (e.g. Siegel & Weinberger, 2012, emotion).
+% the nice part about this is that participants are objectively safe.
+
+There is a long history of models attempting to explain avoidance learning. The
+fundamental challenge is explaining how an action can be reinforced in the
+absence of an outcome. Two-factor theory was the explanation for a long while,
+but suffered from a number of noteworthy criticisms \citep{Krypotos2015}.
+Recent work has revitalized two-factor theory and integrated it with reinforcement
+learning \citep{Moutoussis2008, Maia2010}, and in the process addressing several
+criticisms of two-factor theory. As has been discussed elsewhere \citep{Moutoussis2017},
+such accounts only explain the maintenance of avoidance in short timescales, but
+do not explain why resistant to change and why they do not go away in general.
+
+% Need to go into more detail than this, need to actually make this a coherent
+% explanation, but this can wait for now.
 
 \begin{figure}
   \centerline{%
@@ -270,33 +290,84 @@ complex task findings of Sheynin et al., 2015.
   \par Cliff = -100, Cost = -1, gamma = 0.99
 \end{figure}
 
+In our second result, we demonstrate how a breakdown in control can lead to
+sustained policies of avoidance. We do so in the cliff-walking environment
+\citep{SuttonBarto1998, SuttonBarto2018, Gaskett2003}. Here an agent learns to navigate from
+an initial starting position to an end state. The shortest distance is along a
+cliff edge. If the agent steps off the cliff, it incurs a large penalty. Under
+complete control (objective or perceived), agent in this environment is under no
+threat despite the presence of the cliff's edge. As in the first simulation, this
+is simply because, in a fully controllable world, an agent need not ever interact
+with the aversive state. In fact, an agent can decide to walk straight up to the
+aversive state and, insofar it does not choose to take one step further, will
+never be in any actual danger.
+
+This is not so when deterministic control cannot be assumed. If an agent believes
+it is not in full control of its environment, then it cannot rule out the possibility
+that it may inadvertently encounter the negative state at some point in the future,
+especially if it veers to close to the state. This is true irrespective of whether
+the agent believes it cannot guarantee its own future competency or the benevolence
+of the environment. Importantly, this belief need not match the true environmental
+statistics; belief is enough.
+
+The long-run state values under different beliefs are plotted in Figure 2. As
+expected, under optimistic beliefs (Figure 1b) the entire environment sans negative
+state takes on a positive value (close to the positive state itself). As this belief
+breaks down, we observe a different pattern in the long-run state values. When
+future occupancy of the negative state becomes a non-zero probability, the undesired
+action transition exerts influence on action-outcome calculations, back-propagating,
+and thereby infecting antecedent states. As the agent's belief becomes increasingly
+pessimistic, the more the worst possible action exerts influence and the more
+negative, on average, the state-space grows. Most importantly, because these are
+the long-run state values, the policy is the optimal policy; in other words, this
+is the long-run policy an agent will take.
+
 \subsection{Approach-Avoidance Conflict}
 
-In the third section of the results, we discuss approach-avoidance conflict.
-This covers tasks such as the balloon analog risk task (BART) and the flight
-initiation distance task, which has been found to correlate with anxiety. The
-hallmark of these sorts of tasks is the tradeoff between increased reward vs.
-the possibility of an aversive outcome (e.g. balloon pop, predation). Discuss
-previous findings, i.e. earlier leave times.
+Next, we turn our attention towards a related phenomenon: a bias towards avoidance
+in approach-avoidance conflict. In environments with correlated risk and rewards,
+a bias towards avoidance can ultimately result in fewer expected rewards and worse
+long-run returns. Returning to the example above, an individual with social anxiety
+may forgo social situations to avoid the risk of social embarrassment at the expense
+of friendships, etc. This is another way in which pathological anxiety can be
+disruptive to everyday functioning.
 
-We can show that this is easily explained by our model. A lack of belief of
-future control predicts exiting while things are still good. (We see this in
-Figure 3). The optimal policy in these environments is an earlier leaving time.
-
-This can also be used to explain behavioral inhibition \citep{bach2015, khemka2017}.
-The idea is slightly different than what is advocated. The claim here is that
-in anxious individuals, the Q-values should be closer together, and thus there
-should be longer waiting time. This requires demonstrating that decisions are
-not made in advance; only at the time of decision making. This is something
-I think we will have to argue. (Need to double check the literature here.)
+Experimentally, there is a long history of measuring behavior during
+approach-avoidance conflict in individuals with anxiety (citation, maybe yin-yang anxiety paper).
+One popular paradigm is the balloon analog risk task (BART) \citep{Lejuez2002},
+which has been shown to correlate with anxiety \cite{Maner2007, Giorgetta2012}.
+In the task, a participant pumps a balloon with air. For each pump, the participant
+earns points. If she pumps too much, the balloon pops and she loses all points.
+The participant must decide within each episode when to stop pumping. Leave time
+is the measure of behavior, with earlier leave times in anxiety suggesting a
+greater tendency towards avoidance.
 
 \begin{figure}
   \centerline{%
     \resizebox{1.0\textwidth}{!}{\includegraphics[trim={0 0 0 0},clip]{../figures/03_fid.png}}%
   }
-  \caption{\textbf{Flight Initiation Distance}}
+  \caption{\textbf{BART}}
   \par remember to add parameters
 \end{figure}
+
+Our sequential model of decision making easily explains these results. A schematic
+of the task is presented in Figure 3. Under optimistic beliefs, points should
+travel back from the mean. Under pessimistic assumptions, however, different
+degrees of the worst outcome backpropagate. At a certain point, the perceived cost
+of staying outweighs the guaranteed gains of leaving. Thus, patients with anxiety
+leave earlier.
+
+We can explain similar findings with the flight initiation distance \citep{Mobbs2018,
+Mobbs2019}. One thing our model cannot explain is the neural difference between
+fast and slow escape. Indeed, our model cannot capture all but perhaps is relevant
+for certain calculations. One could imagine these beliefs interacting in such a
+way to change the distance calculations that are necessary for mediating between
+passive and active defense responses.
+
+This can also be used to explain behavioral inhibition \citep{bach2015, khemka2017}.
+The idea is slightly different than what is advocated. The claim here is that
+in anxious individuals, the Q-values should be closer together, and thus there
+should be longer waiting time.
 
 \subsection{Planning}
 
