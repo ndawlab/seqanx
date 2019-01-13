@@ -4,6 +4,8 @@
 \usepackage{amsfonts, amsmath}
 \usepackage{algorithm, algpseudocode}%
 
+\usepackage{natbib}
+
 \title{Anxiety: a decision-theoretic perspective}
 
 \author{
@@ -12,6 +14,11 @@ Princeton Neuroscience Institute\\
 Princeton University\\
 Princeton, NJ 08540 \\
 \texttt{zorowitz@princeton.edu} \\
+\And
+Ida Momennejad \\
+columbia University\\
+New York, NY 10027 \\
+\texttt{ida.m@columbia.edu} \\
 \And
 Nathaniel Daw \\
 Princeton Neuroscience Institute\\
@@ -41,15 +48,15 @@ reinforcement learning; avoidance; anxiety
 Many psychiatric disorders involve distortions in models of the external world
 and, correspondingly, aberrations of learning and decision making. As a normative
 framework, decision theory allows us to describe and pose quantita­tive questions
-about optimal and approximately optimal choice behavior \cite{DayanDaw2008} and
+about optimal and approximately optimal choice behavior \citep{DayanDaw2008} and
 is, therefore, a critical tool for modeling, understanding, and predicting the
 psychological and neurobiological mechanisms responsible for the abnormalities
-observed in psychiatric behavior \cite{HuysDawDayan2015}. Many recent investigations
+observed in psychiatric behavior \citep{HuysDawDayan2015}. Many recent investigations
 employing this approach have provided important insights into psychiatric symptoms,
-including anhedonia in major depression \cite{Rutledge2017}, mood instability
-in bipolar disorder \cite{EldarNiv2015, EldarDolanNiv2016},  habitual decision
-making in disorders of compulsivity \cite{gillan2016}, and hallucinations in
-schizophrenia \cite{powers2017, corlett2018}.
+including anhedonia in major depression \citep{Rutledge2017}, mood instability
+in bipolar disorder \citep{EldarNiv2015, EldarDolanNiv2016},  habitual decision
+making in disorders of compulsivity \citep{gillan2016}, and hallucinations in
+schizophrenia \citep{powers2017, corlett2018}.
 
 Anxiety disorders (generalized anxiety disorder, social anxiety disorder, panic
 disorder, obsessive-compulsive disorder) represent the most common family of
@@ -59,18 +66,18 @@ avoidance. Pessimistic inference describes a tendency to appraise threatening
 situations as more frequent and/or more severe than they objectively are. This has
 been reliably observed experimentally, as in fear conditioning wherein individuals
 with anxiety exhibit exaggerated fear towards safe cues (CS-) and extinguished
-threatening cues \cite{lissek2005, Duits2015}, and clinically, through self-report
+threatening cues \citep{lissek2005, Duits2015}, and clinically, through self-report
 (pick 3 citaitons). Excessive avoidance describes the corresponding tendency for
 individuals with anxiety to consistently flee or avoid threatening situations.
 Avoidance is often chosen even at the expense of potential reward (approch-avoidance
-conflict), and is frequently a major impediment to recovery \cite{Arnaudova2017}.
+conflict), and is frequently a major impediment to recovery \citep{Arnaudova2017}.
 
 Recent studies have attempted to provide some computational models of this behavior
-\cite{Moutoussis2008, Maia2010}. For example, \cite{Maia2010} was able to show
+\citep{Moutoussis2008, Maia2010}. For example, \citep{Maia2010} was able to show
 how reinforcement learning could explain sustained avoidance in the absence of
-repeated reinforcement, observed in rodents \cite{servatius2008} and something
-not explained by two-factor theory \cite{Krypotos2015}. As has been discussed
-elsewhere \cite{Moutoussis2017}, such accounts only explain the maintenance of
+repeated reinforcement, observed in rodents \citep{servatius2008} and something
+not explained by two-factor theory \citep{Krypotos2015}. As has been discussed
+elsewhere \citep{Moutoussis2017}, such accounts only explain the maintenance of
 avoidance in short timescales, but do not explain why resistant to change and
 why they do not go away in general. Such theories also do not explain the magnitude
 of pessimistic inference, or the fear generalization. A broader account is needed.
@@ -136,11 +143,15 @@ Normally, we assume the world is deterministic; in other words, an agent's chose
 action, $a$ leads the agent to the desired successor state, $s'$. In a stochastic
 environment, however, an agent may instead transition to an undesired state, $s^*$.
 
+Importantly, in the clinical literature, pathological anxiety is also associated
+with a lack of perceived control (Gallagher et al., 2014). Studies suggest that
+this belief mediates anxiety (ref?). This can come in whatever form.
+
 Alternately, an agent may choose optimally in the present but may be uncertain of
 its choice control in the future. In such a case, we deviate from the optimal
 policy in the future. We can adopt a different function. There are a number to
-choose from \cite{Garcia2015}. Here we adopt the beta-pessimism criterion
-\cite{Gaskett2003}:
+choose from \citep{Garcia2015}. Here we adopt the beta-pessimism criterion
+\citep{Gaskett2003}:
 
 $$ V(s') = \beta \max_{a'} Q(s',a') + (1 - \beta) \min_{a'} Q(s',a') $$
 
@@ -162,37 +173,36 @@ and the latter to identify finite horizon values. We explain when we use both.
 
 \subsection{Pessimistic Inference}
 
-First and foremost, pathological anxiety is associated with pessimistic expectations
-about the probability and cost of future negative events (Grupe \& Nitschke, 2013;
-Bishop \& Gagne, 2018). In fear conditioning, individuals with anxiety are more
-likely to exhibit increased threat appraisal for safety signals (CS-) and the
-extinguished fear cue (CS+) (Lissek et al. 2005; Duits et al., 2015). In considering
-hypothetical future negative outcomes, individuals with anxiety are more likely
-to evaluate negative outcomes as more likely and their consequences more severe
-(pick a few references).
+One symptom central to all of the anxiety disorders is pessimistic inference,
+or a tendency to appraise the likelihood and/or severity of threatening situations
+out of proportion to their actual environmental contingencies \citep{dsm5, BeckClark1997,
+ClarkBeck2011}. For example, an individual with specific phobia may vastly exaggerate
+the probability of encountering their fear (e.g. a venomous spider) in their
+everyday lives. The first studies of pessimistic inference in clinically anxious
+populations involved individuals judging the perceived likelihood and severity
+of different aversive situations, with the general finding that anxious individuals
+rated these as more likely than non-clinical individuals \citep{ButlerMathews1983,
+ButlerMathews1987, Foa1996, MacLeod1996, MacLeod1997, Luten1997, Stober1997,
+Borkovec1999}; a finding that has been replicated more recently \citep{Maner2006,
+Mitte2007, Miranda2007}.
 
-Importantly, in the clinical literature, pathological anxiety is also associated
-with a lack of perceived control (Gallagher et al., 2014). Studies suggest that
-this belief mediates anxiety (ref?). This can come in whatever form.
+Experimentally, aberrations in threat appraisal have been repeatedly observed
+in a litany of associative learning studies. Common to all of these studies,
+participants learn that a particular stimulus (CS+) predicts the occurrence
+of a negative outcome (e.g. shock, loud noise, aversive image). In simple conditioning,
+there is some evidence to suggest that individuals with anxiety exhibit elevated
+levels of response to threatening stimuli \citep{lissek2005, MinekaOehlberg2008,
+Duits2015}. Importantly, conditioning studies also suggest impaired safety learning
+in anxiety, wherein a stimulus never paired with an aversive outcome (CS-) is also
+feared \citep{Duits2015}. Other notable findings include impaired blocking,
+conditioned discrimination (AX+/BX-) (citations), and conditioned inhibition
+(A+, AB-) (citations).
 
-In the first series of simulations, we show directly how lack of perceived control
-can directly account for pessimistic inference. In the open field environment
-(Figure 1a), an agent navigates a simple grid-world. The world consists of almost
-entirely of empty tiles, except for two which yield a reward and punishment,
-respectively.
-
-Under complete control (objective or perceived), an agent in this environment is
-under no threat despite the presence of an aversive state. This is simply because,
-in a full controllable world, a (non-masochistic) agent is never forced to interact
-with the aversive state. When this control breaks down -- through a stochastic
-world or a distrust of future competency -- an agent can no longer guarantee it
-will never encounter the aversive state. In such a scenario, the negative value
-back-propagates to its predecessor states through the recursive formulas defined
-above. The result is an environment that appears worse (i.e. less positive) than
-it otherwise would.
-
-We shoe this above. Using value iteration. Show it for best-case scenario. Show
-it for expected random. Show it for worst-case scenario.
+% I think when you come back to edit this, you need to highlight these findings
+% more in the context of what you are about to explain. Pessimistic inference
+% is both making bad things worse and, most importantly, that non-bad things
+% become bad. Although one question is how much to include the other less
+% studied paradigms
 
 \begin{figure}
   \centerline{%
@@ -202,13 +212,46 @@ it for expected random. Show it for worst-case scenario.
   \par Current parameters: Reward = 10, Shock = -10, gamma = 0.95.
 \end{figure}
 
+In our first result, we demonstrate one simple mechanism by which pessimistic
+inference and exaggerated threat appraisals may arise. In the *open field* environment,
+an agent is placed in a large grid world entirely empty except for two states,
+leading to positive and negative outcomes, respectively. Under complete control
+(objective or perceived), an agent in this environment in under no threat despite
+the presence of negative states. This is simply because, in a fully controllable
+world, an agent need not ever interact with the aversive state. In fact, an agent
+can decide to walk straight up to the aversive state and, insofar it does not
+choose to take one step further, will never be in any actual danger.
+
+This is not so when deterministic control cannot be assumed. If an agent believes
+it is not in full control of its environment, then it cannot rule out the possibility
+that it may inadvertently encounter the negative state at some point in the future,
+especially if it veers to close to the state. This is true irrespective of whether
+the agent believes it cannot guarantee its own future competency or the benevolence
+of the environment. Importantly, this belief need not match the true environmental
+statistics; belief is enough.
+
+The long-run state values under different beliefs are plotted in Figure 1. As
+expected, under optimistic beliefs (Figure 1b) the entire environment sans negative
+state takes on a positive value (close to the positive state itself). As this belief
+breaks down, we observe a different pattern in the long-run state values. When
+future occupancy of the negative state becomes a non-zero probability, the undesired
+action transition exerts influence on action-outcome calculations, back-propagating,
+and thereby infecting antecedent states. As the agent's belief becomes increasingly
+pessimistic, the more the worst possible action exerts influence and the more
+negative, on average, the state-space grows.
+
+In the breakdown of perceived control then, negative states can grow worse (i.e.
+more predictive of future negative outcome) and otherwise positive states can too.
+This occurs as a simple result that if control not guaranteed, cannot guaranteed
+bad things wont happen. 
+
 \subsection{Avoidance}
 
-1. Open with definition of avoidance. Follow \cite{Arnaudova2017} in definitions, i.e.
+1. Open with definition of avoidance. Follow \citep{Arnaudova2017} in definitions, i.e.
 the basic idea that avoidance is the distancing of oneself from real or perceived
 threat.
 2. Describe cliff walking environment. Need to discuss that we are expanding
-on the result originally described in \cite{Gaskett2003}.
+on the result originally described in \citep{Gaskett2003}.
 3. With increasing pessimism, agent further distances self from cliff. Note that
 this is the optimal policy under those set of beliefs about the world.
 4. This can explain how avoidance is maintained. Even with luck and chance in the
@@ -240,7 +283,7 @@ We can show that this is easily explained by our model. A lack of belief of
 future control predicts exiting while things are still good. (We see this in
 Figure 3). The optimal policy in these environments is an earlier leaving time.
 
-This can also be used to explain behavioral inhibition \cite{bach2015, khemka2017}.
+This can also be used to explain behavioral inhibition \citep{bach2015, khemka2017}.
 The idea is slightly different than what is advocated. The claim here is that
 in anxious individuals, the Q-values should be closer together, and thus there
 should be longer waiting time. This requires demonstrating that decisions are
@@ -257,7 +300,7 @@ I think we will have to argue. (Need to double check the literature here.)
 
 \subsection{Planning}
 
-Basically reviewing the arguments of Huys here \cite{Huys2012, Lally2017}.
+Basically reviewing the arguments of Huys here \citep{Huys2012, Lally2017}.
 Need to get facts straight before going through all of this.
 
 \begin{figure}
@@ -285,7 +328,7 @@ Need to get facts straight before going through all of this.
 In this article, we showed...
 
 Discuss previous computational approaches: This has also been previously been
-investigated in previous computational modeling \cite{Huys2009}. There
+investigated in previous computational modeling \citep{Huys2009}. There
 the authors found that beliefs about a lack of controllability, mechanistically
 modeled as corrupted priors about action-outcome contingencies, found deficient
 learning in novel environments. The present results are no doubt related, but
@@ -298,16 +341,16 @@ an agent was currently occupying. In partially-observable Markov decision proble
 the state itself must be inferred from external and internal variables. This is
 yet another means by which bad value can spread if undue likelihood is granted
 to undesirable or aversive states. This ideas has previously been proposed to
-explain some symptoms in anxiety \cite{Paulus2012}, and not without good reason.
+explain some symptoms in anxiety \citep{Paulus2012}, and not without good reason.
 Anxiety disorders involve negatively biased interpretation of ambiguous percepts
-\cite{Hartley2012}, which may result in aberrant planning and increased avoidance
+\citep{Hartley2012}, which may result in aberrant planning and increased avoidance
 for similar reasons to those described above. This is an area for future research.
 
 In this article, we have explored a computational principle of approach and
 avoidance learning in sequential decision environments. We have not discussed,
 however, the particular psychological or neurobiological mechanisms by which this
 sort of learning may take place. This issue has been discussed in detail elsewhere
-\cite{Bishop2018}, but we briefly discuss a few possibilities here. Mechanically,
+\citep{Bishop2018}, but we briefly discuss a few possibilities here. Mechanically,
 we understand that complex decision problems are solved by mental processes that
 exist on a spectrum between model-based and model-free (Daw et al., 2005). The
 difference between these two families of methods hinges on the reliance of an
@@ -333,7 +376,7 @@ episodes in order to make predictions about future value, then biased sampling
 
 Within the realm of model-free decision making, several studies have found evidence
 suggesting increased learning rates for negative reward prediction errors in
-individuals with elevated levels of anxiety \cite{Aylward, Huang2017, Harle2017
+individuals with elevated levels of anxiety \citep{Aylward, Huang2017, Harle2017
 garrett2018}. Though an asymmetry in sensitivity to
 positive and negative reward prediction errors bears superficial similarity, for
 the reasons described above merely attending more to negative information does not
@@ -349,7 +392,7 @@ area for future research.
 
 \section{References}
 
-\bibliographystyle{authordate1}
+\bibliographystyle{vancouver-authoryear}
 \bibliography{citations}
 
 \section{Appendix}
