@@ -4,7 +4,7 @@ import seaborn as sns
 from numpy import radians as rad
 from matplotlib.patches import Arc, RegularPolygon
 
-def _draw_nodes(ax, s):
+def _draw_nodes(ax, s, labels=True):
     
     ## Define node positions.
     xpos = [-1, 0, 1, 1]
@@ -56,5 +56,5 @@ def plot_helplessness(ax):
     _draw_nodes(ax, 2500)
 
     ## Clean up.
-    ax.set(xticks=[], yticks=[], ylim=(-1.5, 1.5), xlim=(-1.6, 1.6))
+    ax.set(xticks=[], yticks=[], ylim=(-1.5, 1.5), xlim=(-1.7, 1.5))
     sns.despine(top=True, bottom=True, left=True, right=True, ax=ax)

@@ -1,30 +1,31 @@
 import numpy as np
-from ._base import GraphWorld
+from ._base import GraphWorld, grid_to_adj
 
 class Helplessness(GraphWorld):
     
-    def __init__(self, rewards=[-1,1]):
+    def __init__(self, outcomes=[10,-10,5,0], epsilon=0):
         
-        ## Error catching.
-        assert np.equal(len(rewards), 2)
-            
-        ## Define one-step transition matrix.
-        T = np.zeros((5, 5)) * np.nan
-        T[0, [1, 4]] = 1
-        T[1, [2, 3]] = 1
-        T[np.arange(2,5),np.arange(2,5)] = 1
-
-        ## Define rewards.
-        R = np.copy(T)
-        R[np.where(~np.isnan(R))] = 0
-        R[1,[2, 3]] = rewards
+        ## Define gridworld.
+        self.grid = np.arange(5*21).reshape(5,21)
+        self.shape = self.grid.shape
         
         ## Define start/terminal states.
-        start = 0
-        terminal = np.arange(2,5)
+        start = 56
+        terminal = np.array([44,48,52,60])
+
+        ## Define one-step transition matrix.
+        T = grid_to_adj(self.grid, terminal)
+        self.T = T
+        
+        ## Define rewards.
+        R = np.zeros_like(T) 
+        for s, r in zip(terminal, outcomes): R[:,s] = r
+        R[terminal,terminal] = 0
+        R *= T
         
         ## Initialize GraphWorld.
-        GraphWorld.__init__(self, T, R, start, terminal, 0)
+        GraphWorld.__init__(self, T, R, start, terminal, epsilon)
+        self.R = R
         
     def __repr__(self):
         return '<GraphWorld | Learned Helplessness>'

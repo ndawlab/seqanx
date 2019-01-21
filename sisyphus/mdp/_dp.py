@@ -9,7 +9,7 @@ class ValueIteration(object):
     
     Parameters
     ----------
-    policy : max | min | softmax | betamax (default = softmax)
+    policy : max | min | softmax | betamax (default = betamax)
         Choice policy.
     beta : float
         Inverse temperature (ignored if policy not softmax).
@@ -25,7 +25,7 @@ class ValueIteration(object):
     1. Sutton, R. S., & Barto, A. G. (1998). Reinforcement learning: An introduction. MIT press.
     """
     
-    def __init__(self, policy='softmax', beta=10, gamma=0.9, tol=0.0001, max_iter=100):
+    def __init__(self, policy='betamax', beta=10, gamma=0.9, tol=0.0001, max_iter=100):
 
         ## Define choice policy.
         self.policy = policy
@@ -44,10 +44,11 @@ class ValueIteration(object):
         self.tol = tol
         self.max_iter = max_iter        
         
-    def _q_solve(self, info):
+    def _q_solve(self, info, Q=None):
         
         ## Initialize Q-values.
-        Q = np.zeros(info.shape[0], dtype=float)
+        if Q is None: Q = np.zeros(info.shape[0], dtype=float)
+        assert np.equal(Q.shape, info.shape[0])
         copy = info.copy()
             
         ## Main loop.
@@ -112,7 +113,7 @@ class ValueIteration(object):
                 
         return policy
             
-    def fit(self, gym):        
+    def fit(self, gym, Q=None, verbose=True):        
         """Solve for optimal policy.
         
         Parameters
@@ -126,8 +127,9 @@ class ValueIteration(object):
         """
         
         ## Solve for Q-values.
-        self.Q, self.n_iter = self._q_solve(gym.info)
-        if self.n_iter == self.max_iter: warn('Reached maximum iterations.')
+        self.Q, self.n_iter = self._q_solve(gym.info, Q)
+        if np.equal(self.n_iter, self.max_iter) and verbose:
+            warn('Reached maximum iterations.')
         
         ## Solve for values.
         self.V = self._v_solve(gym.info)
