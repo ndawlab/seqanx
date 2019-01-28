@@ -6,3 +6,7 @@
 
 SecretFunTimes
 ==============
+
+TODO
+^^^^
+- Make public, run travis-ci

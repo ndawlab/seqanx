@@ -3,15 +3,15 @@ from ._base import GraphWorld, grid_to_adj
 
 class Helplessness(GraphWorld):
     
-    def __init__(self, outcomes=[10,-10,5,0], epsilon=0):
+    def __init__(self, outcomes=[10,-10], epsilon=0):
         
         ## Define gridworld.
-        self.grid = np.arange(5*21).reshape(5,21)
+        self.grid = np.arange(5*15).reshape(5,15)
         self.shape = self.grid.shape
         
         ## Define start/terminal states.
-        start = 56
-        terminal = np.array([44,48,52,60])
+        start = 44
+        terminal = np.array([30, 37])
 
         ## Define one-step transition matrix.
         T = grid_to_adj(self.grid, terminal)
@@ -27,5 +27,78 @@ class Helplessness(GraphWorld):
         GraphWorld.__init__(self, T, R, start, terminal, epsilon)
         self.R = R
         
+        ## Update start.
+        self.terminal = np.append(self.terminal, start)
+        self.info = self.info.loc[self.info.S != 44]
+        for i in range(4):
+            d = {"S":44, "S'":np.roll([29, 43, 44, 59],i), "T":np.array([1,0,0,0]), "R":np.zeros(4)}
+            self.info = self.info.append(d, ignore_index=True)
+        self.info = self.info.sort_values('S').reset_index(drop=True)
+        
     def __repr__(self):
         return '<GraphWorld | Learned Helplessness>'
+    
+    def plot_lh(self, reward=10, shock=-10, annot=True, grid_color='0.8',  
+                   reward_color='#f3e1db', shock_color='#1c142a', 
+                   cbar=False, annot_kws=None, ax=None):
+        """Plot cliff-walking environment.
+
+        Parameters
+        ----------
+        reward : float
+            Reward value.
+        shock : float
+            Shock value.
+        annot : bool
+            Annotate states.
+        grid_color : str
+            Color of grid tiles.
+        reward_color : str
+            Color of rewarding tile.
+        shock_color : str
+            Color of punishing tile.
+        cbar : bool
+            Whether to draw a colorbar.
+        annot_kws : dict of key, value mappings, optional
+            Keyword arguments for ax.text when annot is True. 
+        ax : matplotlib Axes
+            Axes in which to draw the plot.
+
+        Returns
+        -------
+        ax : matplotlib Axes
+            Axes in which to draw the plot.
+        """
+        
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+        from matplotlib.colors import ListedColormap
+        
+        ## Initialize canvas.
+        if ax is None: fig, ax = plt.subplots(1,1,figsize=(5,5))
+
+        ## Define grid.
+        grid = np.zeros_like(self.grid)    # Viable states
+        grid[[2,2],[0,7]] = [1, 2]         # Reward/shock states
+
+        ## Define colormap.
+        cmap = ListedColormap([grid_color, reward_color, shock_color])
+
+        ## Plot cliff.
+        ax = sns.heatmap(grid, cmap=cmap, cbar=cbar, ax=ax)
+        ax.set(xticklabels=[], yticklabels=[], title='Learned Helplessness')  
+
+        ## Add outline.
+        x,y = self.shape
+        ax.vlines(np.arange(1,y),0,x,lw=0.1)
+        ax.hlines(np.arange(1,x),0,y,lw=0.1)
+
+        ## Annotate.
+        if annot:
+            if annot_kws is None: annot_kws = dict()
+            ax.text(0.5,2.5,reward,ha='center',va='center',**annot_kws)
+            ax.text(7.45,2.5,shock,ha='center',va='center',**annot_kws)
+            annot_kws['color'] = 'k'
+            ax.text(14.5,2.5,'S',ha='center',va='center',**annot_kws)
+        
+        return ax
