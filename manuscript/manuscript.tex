@@ -373,20 +373,59 @@ should be longer waiting time.
 
 \subsection{Planning}
 
-Basically reviewing the arguments of Huys here \citep{Huys2012, Lally2017}.
-Need to get facts straight before going through all of this.
+In this next section, we review the literature on aversive pruning. In large,
+multi-step sequential decision environments, the space of all possible sequences
+of choices grows exponentially larger with increasing sequence length. As such,
+it is infeasible for decision making agents to exhaustively explore all possible
+sequences select that which maximizes reward from the entire set. Heuristics for
+narrowing the search space then are not only plausible but beneficial for a
+decision making agent.
 
-Review the original findings of the papers. Aversive pruning as a means of
-limiting computational demands in forward planning in complex sequential
-environments. Remark that this is a sensible theory and we are not attempting to
-argue against it.
+One such heuristic that has been proposed in the literature is aversive pruning
+\citep{Huys2012}. Aversive pruning is defined as a Pavlovian response to encountering
+a large loss in planning such that sequences involving large losses are discarded
+from further evaluation. An example of scenario is presented in Figure 4. The prediction
+in such an environment is that an agent would discard the branch of the decision
+tree involving an immediate large negative loss even though this branch objectively
+contains the reward maximizing (loss minimizing) sequence of choices.
 
-Rather we are trying to show that our theory makes similar predictions in the
-sorts of tasks. Combine that with expectations of one's own incompetency, and
-maybe its not all that surprising. Combine this with working memory deficits
-in anxiety, and maybe its doubly not surprising. So... Yeah.
+\cite{Huys2012} (and later \cite{Lally2017}) tested this prediction in the
+choice envrionment displayed in Figure 4. Participants received extensive training
+in this decision tree environment (first without outcomes and then later with
+rewards) in order to facilitate planning. In free-planning trials, many participants
+exhibited this Pavlovian bias, rejecting choice sequences which involved the large
+loss even when the sequence was objectively reward maximizing (loss minimizing).
+Importantly \cite{Huys2012} and \cite{Lally2017} found the degree of aversive
+pruning was correlated with depressive and anxiety symptoms, respectively.
 
-There are ways to teasing this apart.
+The aversive pruning principle makes tremendous sense and draws on a robust literature
+of heuristics and computational shortcuts for circumventing computationally intractable
+cognitive processes. It is important to note, however, that a control interpretation
+also makes similar predictions. Figure 4b-d shows the preferred routes of simulated
+agents in the same environments under increasingly pessimistic expectations of
+future actions. As can be observed, pessimistic agents are similarly likely to avoid
+the branch with the large loss, though for different reasons. Under the pessimistic case,
+the agent is increasingly less confident that the large gains later in
+sequence will be realized; as such, the agent is less confident that the initial
+large loss will be offset. Consequently, pessimistic agents would prefer the branch
+with smaller losses (even if this is objectively suboptimal). This prediction
+is similarly consistent with the finding that avoidance of the initial large loss
+is correlated with anxiety \cite{Lally2017}.
+
+An interpretation like this would be consistent with reduced beliefs in one's
+own competency in such an environment. This is not strictly surprising. Planning
+multi-choice sequences even in relatively simple environments like those used
+in these experiments still ostensibly require working memory ability to keep in
+mind the possible consequences along each branch. Insofar that working memory
+ability is disrupted in anxiety disorders \citep{Moran2016}, a pessimistic belief
+may be justified and possibly optimal.
+
+It is also worht noting that the two theories can be easily disentangled with a
+simple manipulation of the choice environment. The two theories predict
+different choices when the large loss comes later in sequence. For aversive pruning,
+late large losses should have little effect on choice behavior. For pessimistic
+learning, however, the value of large losses should back-propagate and contaminate
+its associated branch. Future experiments can tease these apart as tests of the theory.
 
 \begin{figure}
   \centerline{%
@@ -397,6 +436,38 @@ There are ways to teasing this apart.
 \end{figure}
 
 \subsection{Free Choice Premium}
+
+If an agent is confident that their compentency in decision-making in intact,
+then it follows that situations in which an individual is able to make a choice
+should be preferable to situations in which an individual is not. At worst,
+an agent is no better off than if they had not made a choice; at best, an agent
+is better able to steer themselves toward desirable outcomes. Such is the logic
+that underlies an increasingly robust literature suggesting choice is inherently
+valuable \citep{Leotti2010}.
+
+This free choice premium has been demonstrated multiple times in humans \citep{Suzuki1997,Leotti2011,Leotti2014,Cockburn2014} using a variety of decision
+paradigms. For the present purposes, we will describe the experiments presented in
+\citep{Leotti2011,Leotti2014}. In these experiments, participants complete a
+two-stage decision making task (Figure 5). In the first stage, participants are
+make a choice between two cues: one leading to free choice and the other leading
+to a fixed choice. In the second stage, participants are able to choose between
+a second set of cues (free choice) or are forced to choose a cue (fixed choice).
+Unbeknownst to participants, all cues yield reward following the same outcome
+distribution; thus, no cue is advantageous in the long-run. The free choice
+premium is measured as a preference for the cue leading to free choice. \cite{Leotti2011,Leotti2014}
+find participants still prefer the free choice cue, despite this conferring no
+objective benefit to participants.
+
+Insofar that this effect is contingent on the belief of one's own competency,
+it stands to reason that this free choice premium should be absent in individuals
+with anxiety and anxious control beliefs. We demonstrate this effect in Figure 5.
+In each trial, the reward outcomes are equal for all options (-1, 1). In individuals
+with increasingly pessimistic beliefs, the worst outcome in free choice is increasingly
+back-propagated to the free-choice cue, thereby making it less attractive than
+the fixed choice cue. Hence, pessimistic learners, on average, do not exhibit
+this choice bias.
+
+To our knowledge this prediction has not been empirically tested. 
 
 \begin{figure}
   \centerline{%
