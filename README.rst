@@ -9,4 +9,6 @@ SecretFunTimes
 
 TODO
 ^^^^
+- Update FID naming, figure
+- Update free choice (fix schedule)
 - Make public, run travis-ci

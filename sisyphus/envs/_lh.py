@@ -84,9 +84,9 @@ class Helplessness(GraphWorld):
         ## Define colormap.
         cmap = ListedColormap([grid_color, reward_color, shock_color])
 
-        ## Plot cliff.
+        ## Plot environment.
         ax = sns.heatmap(grid, cmap=cmap, cbar=cbar, ax=ax)
-        ax.set(xticklabels=[], yticklabels=[], title='Learned Helplessness')  
+        ax.set(xticklabels=[], yticklabels=[])  
 
         ## Add outline.
         x,y = self.shape
@@ -101,4 +101,39 @@ class Helplessness(GraphWorld):
             annot_kws['color'] = 'k'
             ax.text(14.5,2.5,'S',ha='center',va='center',**annot_kws)
         
+        return ax
+    
+    def plot_policy(self, ax, pi, color='w', head_width=0.25, head_length=0.25):
+        """Plot agent policy on grid world.
+
+        Parameters
+        ----------
+        ax : matplotlib Axes
+            Axes in which to draw the plot.
+        pi : array
+            Agent policy, i.e. ordered visitation of states.
+        color : str (default = white)
+            Color of arrow.
+        head_width : float (default=0.25)
+            Width of the arrow head.
+        head_length : float (default=0.25)
+            Length of the arrow head.
+
+        Returns
+        -------
+        ax : matplotlib Axes
+            Axes in which to draw the plot.
+        """
+
+        ## Iteratively plot arrows.
+        for i in range(len(pi)-1):
+
+            ## Identify S, S' coordinates.
+            y1, x1 = np.where(self.grid==pi[i])
+            y2, x2 = np.where(self.grid==pi[i+1])
+
+            ## Plot.
+            ax.arrow(int(x1)+0.5, int(y1)+0.5, 0.5*int(x2-x1), 0.5*int(y2-y1), 
+                     color=color, head_width=head_width, head_length=head_length)
+
         return ax

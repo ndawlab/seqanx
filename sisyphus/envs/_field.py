@@ -33,7 +33,7 @@ class OpenField(GraphWorld):
     def plot_field(self, reward=10, shock=-10, annot=True, grid_color='0.8',  
                    reward_color='#f3e1db', shock_color='#1c142a', 
                    cbar=False, annot_kws=None, ax=None):
-        """Plot cliff-walking environment.
+        """Plot open field environment.
 
         Parameters
         ----------
@@ -76,9 +76,9 @@ class OpenField(GraphWorld):
         ## Define colormap.
         cmap = ListedColormap([grid_color, reward_color, shock_color])
 
-        ## Plot cliff.
+        ## Plot open field.
         ax = sns.heatmap(grid, cmap=cmap, cbar=cbar, ax=ax)
-        ax.set(xticklabels=[], yticklabels=[], title='Cliff Walking')  
+        ax.set(xticklabels=[], yticklabels=[])  
 
         ## Add outline.
         ax.vlines(np.arange(1,11),0,11,lw=0.1)

@@ -214,11 +214,11 @@ on Github (https://github.com/szorowi1/SecretFunTimes).
   \centerline{%
     \resizebox{1.0\textwidth}{!}{\includegraphics[trim={0 0 0 0},clip]{../figures/01_field.png}}%
   }
-  \par Figure 1: The open field environment is a large deterministic gridworld sans one rewarding
-  (blue) and aversive (red) state (A). Under optimistic learning conditions (B), all states except
-  for the harmful one become positive. Under pessimistic conditions (C), negative value spreads
-  from the source to its antecedent states. The extent of the spread is worse for increased
-  pessimism (D). (Parameters: $\gamma = 0.95$)
+  \par \textbf{Figure 1:} The open field is a deterministic gridworld with only one rewarding
+  (blue) and aversive (red) state (A). For an optimistic agent ($w=1$), all states (other than
+  the harmful state) take on positive value (B). For a pessimistic agent ($w=0.5$), negative value spreads
+  from the source to antecedent states (C). With increasing pessimism ($w=0$), the extent of the spread
+  grows worse (D). (Parameters: $\gamma = 0.95$)
 \end{figure}
 
 In this first section, we demonstrate how learning under an assumption of a lack
@@ -243,7 +243,7 @@ studies demonstrate that anxious individuals exhibit greater fear towards threat
 cues, non-threatening cues, and extinguished threatening cues as compared to non-anxious
 counterparts \citep{lissek2005, MinekaOehlberg2008, Duits2015}. Importantly, threatening
 cues can become associated with secondary neutral cues, allowing negative value to
-spread citep{wessa2007}. In sum, anxiety is associated with inflated estimates of
+spread \citep{wessa2007}. In sum, anxiety is associated with inflated estimates of
 threat, both likelihood and value, and these estimates can spread from the source
 to distantly associated cues.
 
@@ -263,7 +263,7 @@ sans the harmful state itself, take on a positive value. This is unsurprising
 insofar that, except for the harmful state, the agent will always encounter
 a reward in the long-run no matter its starting position in the field.
 
-The same cannot be said for a the pessimistic agent. If an agent doubts its future
+The same cannot be said for a pessimistic agent. If an agent doubts its future
 ability to act in according with the optimal policy, then it cannot rule out that,
 in the future, it may inadvertently encounter the harmful state. This is more so
 likely if the agent is already proximal to the harmful state. Under this pessimistic
@@ -284,30 +284,35 @@ the anxiety disorders.
 
 \subsection{Avoidance}
 
-A second symptom central to all anxiety disorders is avoidance \citep{dsm5,
-Krypotos2015, Arnaudova2017}, or actions taken to increase or maintain the temporal,
-physical and/or mental distance between an individual and a threatening situation.
-Although avoidance is a natural response to danger, excessive avoidance as is
-observed in anxiety disorders is can be highly disruptive to everyday functioning
-\cite{Salter2004} and may work to sustain anxious appraisals and behavior. For
-example, an individual with social anxiety may avoid attending large social events
-for fear of public embarrassment only to never learn that such worry is not justified.
+\begin{figure}
+  \centerline{%
+    \resizebox{1.0\textwidth}{!}{\includegraphics[trim={0 0 0 0},clip]{../figures/02_cliff.png}}%
+  }
+  \par \textbf{Figure 2:} Cliff-walking is a deterministic gridworld where an agent
+  must navigate from one side (S) to the goal on the other side (G) (A). Every
+  step costs the agent ($r=-1$) but stepping off the cliff results in great harm ($r=-100$).
+  An optimistic agent learns to travel the shortest (loss-minimizing) path along the cliff (B).
+  For a pessimistic agent ($w=0.8$), the potential for harm yields an optimal policy that
+  maintains distance from the cliff's edge (C). With increasing pessimism ($w=0.6$), the agent
+  learns an optimal path off the cliff so as to minimize unnecessary steps prior to its
+  perceived inevitable harm (D). (Parameters: $\gamma = 1$)
+\end{figure}
 
-Avoidance is often chosen even at the expense of potential reward (approch-avoidance
-conflict), and is frequently a major impediment to recovery \citep{Arnaudova2017}.
+In addition to pessimistic inference, all anxiety disorders share pathological
+avoidance as core symptom \citep{dsm5, Krypotos2015, Arnaudova2017}. Avoidance
+behaviors seekto increase or maintain the temporal, physical and/or mental distance
+between an individual and a threatening situation. Although avoidance is a natural response to danger, excessive avoidance as is observed in anxiety disorders can be highly disruptive to everyday
+functioning \cite{Salter2004} and frequently function so as maintain anxiety
+by preventing extinction \citep{Arnaudova2017}. For example, an individual with social anxiety may avoid
+attending large social events for fear of public embarrassment only to never learn
+that such worry is not justified.
 
-In the laboratory, avoidance has been measured in a variety of ways. In animal
-models of anxiety, anxious rodents are found to exhibit avoidance learning more
-quickly and maintain avoidance for longer \citep{servatius2008}. In studies of
-human avoidance, anxiety has been found to correlate with the maintenance of
-increased distance from threat, such as virtual predators \citep{Bach2014, Bach2017,
-Sheynin2014}.
-
-% Arnaudova2017 makes reference to some spider approach studies that might be
-% interesting to try and track down. Essential idea is that even though
-% participants are totally safe, may not touch the glass. The task is the
-% behavioral avoidance task. (e.g. Siegel & Weinberger, 2012, emotion).
-% the nice part about this is that participants are objectively safe.
+Avoidance behaviors in anxiety have been studied using a variety of methods. Perhaps
+the most classic paradigm is the behavioral avoidance test \citep{bandura1977}, wherein participants
+complete a number of tasks involving a feared object or situation and the number of
+tasks completed (or lack thereof) is a measure of avoidance. Computerized avoidance
+tasks have become increasingly common, and increased distance from virtual threat
+has been found to correlate with anxiety \citep{Bach2014, Bach2017, Sheynin2014}.
 
 There is a long history of models attempting to explain avoidance learning. The
 fundamental challenge is explaining how an action can be reinforced in the
@@ -319,48 +324,42 @@ criticisms of two-factor theory. As has been discussed elsewhere \citep{Moutouss
 such accounts only explain the maintenance of avoidance in short timescales, but
 do not explain why resistant to change and why they do not go away in general.
 
-% Need to go into more detail than this, need to actually make this a coherent
-% explanation, but this can wait for now.
+In our second simulation, we demonstrate how pessimistic learning can yield
+sustained avoidance. In the cliff-walking environment \citep{SuttonBarto1998,
+SuttonBarto2018, Gaskett2003}, an agent must navigate from a start on side of the
+map to the other (Figure 2a). The agent experiences a small penalty for every
+step it takes. The shortest (least costly) path is along the cliff's edge; if the
+agent steps off the cliff, however, it incurs a much larger penalty. As in the first
+environment, we assume a deterministic transition structure.
 
-\begin{figure}
-  \centerline{%
-    \resizebox{1.0\textwidth}{!}{\includegraphics[trim={0 0 0 0},clip]{../figures/02_cliff.png}}%
-  }
-  \caption{\textbf{Cliff Walking}}
-  \par Cliff = -100, Cost = -1, gamma = 0.99
-\end{figure}
+Just as in the first environment, the long-run value estimates by an optimistic
+agent do not reflect the potential harm of the cliff (Figure 2b). Because this agent (rightfully)
+expects to act according to the optimal policy in the future (i.e. never step off
+the cliff), the agent perceives no risk of future disaster and thus the large
+penalties of stepping off the cliff do not pollute the agent's value estimates.
+The optimistic agent learns the loss-minimizing policy and walks along the cliff's edge.
 
-In our second result, we demonstrate how a breakdown in control can lead to
-sustained policies of avoidance. We do so in the cliff-walking environment
-\citep{SuttonBarto1998, SuttonBarto2018, Gaskett2003}. Here an agent learns to navigate from
-an initial starting position to an end state. The shortest distance is along a
-cliff edge. If the agent steps off the cliff, it incurs a large penalty. Under
-complete control (objective or perceived), agent in this environment is under no
-threat despite the presence of the cliff's edge. As in the first simulation, this
-is simply because, in a fully controllable world, an agent need not ever interact
-with the aversive state. In fact, an agent can decide to walk straight up to the
-aversive state and, insofar it does not choose to take one step further, will
-never be in any actual danger.
+This is not the case for the pessimistic agent. As above, when the agent doubts
+its future ability to act in a reward-maximizing (loss-minimizing) manor, it
+cannot rule out the possibility of accidentally stepping off the cliff. Thus,
+the potential for future harm is no longer zero and the large penalties for stepping
+off the cliff may back-propagate to their antecedent states, and so on. The extent
+of this spread is dependent on the strength of the pessimistic belief.
+With increasing pessimism, the optimal policy for the agent is increasingly
+distance from the cliff's edge (Figure 2c). Surprisingly, at high levels of pessimistic
+belief, the optimal policy is to immediately step off the cliff (Figure 2d). The
+reason for this is simple: with high levels of pessimism, the likelihood of disaster
+grows large enough that any step is simply viewed as adding onto the pain.
 
-This is not so when deterministic control cannot be assumed. If an agent believes
-it is not in full control of its environment, then it cannot rule out the possibility
-that it may inadvertently encounter the negative state at some point in the future,
-especially if it veers to close to the state. This is true irrespective of whether
-the agent believes it cannot guarantee its own future competency or the benevolence
-of the environment. Importantly, this belief need not match the true environmental
-statistics; belief is enough.
-
-The long-run state values under different beliefs are plotted in Figure 2. As
-expected, under optimistic beliefs (Figure 1b) the entire environment sans negative
-state takes on a positive value (close to the positive state itself). As this belief
-breaks down, we observe a different pattern in the long-run state values. When
-future occupancy of the negative state becomes a non-zero probability, the undesired
-action transition exerts influence on action-outcome calculations, back-propagating,
-and thereby infecting antecedent states. As the agent's belief becomes increasingly
-pessimistic, the more the worst possible action exerts influence and the more
-negative, on average, the state-space grows. Most importantly, because these are
-the long-run state values, the policy is the optimal policy; in other words, this
-is the long-run policy an agent will take.
+Under pessimistic learning then, a perceived lack of self-efficacy can yield the
+propagation of negative value from potential future harms. In such a scenario,
+the optimal policy for an agent is to maintain a distance from threat far enough
+so as to optimally balance the risk of catastrophe with foregone losses. Importantly,
+these simulations demonstrate the long-run value estimates rather than any momentary
+value estimates. In other words, the behavioral policy these agents demonstrate
+will be maintained insofar beliefs about self-efficacy are maintained, irrespective
+of any momentary noisiness in actual outcomes. Thus, pessimistic learning can
+account for pathological avoidance in anxiety disorders.
 
 \subsection{Approach-Avoidance Conflict}
 

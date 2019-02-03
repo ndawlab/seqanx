@@ -83,7 +83,7 @@ class CliffWalking(GraphWorld):
 
         ## Plot cliff.
         ax = sns.heatmap(grid, cmap=cmap, cbar=cbar)
-        ax.set(xticklabels=[], yticklabels=[], title='Cliff Walking')  
+        ax.set(xticklabels=[], yticklabels=[])  
 
         ## Add outline.
         ax.vlines(np.arange(1,12),0,10,lw=0.1)
