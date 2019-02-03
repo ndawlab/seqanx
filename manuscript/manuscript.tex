@@ -1,4 +1,4 @@
-\documentclass[11pt]{article} % For LaTeX2e
+environment\documentclass[11pt]{article} % For LaTeX2e
 \usepackage{manuscript, palatino}
 \usepackage{graphicx}
 \usepackage{amsfonts, amsmath}
@@ -139,7 +139,8 @@ $$ q_*(s,a) = \sum_{s',r}p(s',r|s,a) \left[ r + \gamma \max_{a'} q_*(s',a') \rig
 Thus in a conventional MDP, the value of states in the environment under the optimal
 policy assumes the agent is able to act according to the optimal policy in the future.
 
-\subsection{Robust Control}
+\subsection{Pessimistic Learning}
+
 In the previous section, we observed that the value of a state and its associated
 state-action pairs are a function of the environment transition distribution and
 the best future action. In standard MDP problems, it is typically assumed that the
@@ -196,56 +197,18 @@ claim about anxiety.
 
 \subsection{Simulations}
 
-In some instances, we solve for Q-values and state values directly through value
-iteration. This is a form of Dynamic Programming. In other instances, we estimate
-these terms through temporal difference learning. We use beta-pessimism (betamax)
-learning for both. We use the former to solve for final (infinite horizon) values
-and the latter to identify finite horizon values. We explain when we use both.
+In the following sections, we present the results of simulations of pessimistic
+learning in a variety of MDP environments. In all simulations, the state-action
+values under the optimal policy, $Q_*(s,a)$, were solved for directly through
+Q-value iteration \citep{SuttonBarto1998,SuttonBarto1998,bertsekas2005}. The
+details of this algorithm are presented in the appendix. Model parameters are
+reported for each environment in their corresponding sections. All simulations
+were carried out using the scientific python distribution and are publicly available
+at on Github (https://github.com/szorowi1/SecretFunTimes).
 
 \section{Results}
 
 \subsection{Pessimistic Inference}
-
-One symptom central to all of the anxiety disorders is pessimistic inference,
-or a tendency to appraise the likelihood and/or severity of threatening situations
-out of proportion to their actual environmental contingencies \citep{dsm5, BeckClark1997,
-ClarkBeck2011}. For example, an individual with specific phobia may vastly exaggerate
-the probability of encountering their fear (e.g. a venomous spider) in their
-everyday lives. The first studies of pessimistic inference in clinically anxious
-populations involved individuals judging the perceived likelihood and severity
-of different aversive situations, with the general finding that anxious individuals
-rated these as more likely than non-clinical individuals \citep{ButlerMathews1983,
-ButlerMathews1987, Foa1996, MacLeod1996, MacLeod1997, Luten1997, Stober1997,
-Borkovec1999}; a finding that has been replicated more recently \citep{Maner2006,
-Mitte2007, Miranda2007}.
-
-In self-report,
-individuals with anxiety rate hypothetical future negative outcomes as
-being more likely to occur and worse to experience than non-anxious counterparts
-\citep{ButlerMathews1983, ButlerMathews1987, Foa1996, MacLeod1996, MacLeod1997,
-Luten1997, Stober1997, Borkovec1999, Maner2006, Mitte2007, Miranda2007}. In the
-laboratory, individuals with anxiety demonstrate excessive fear in fear conditioning
-paradigms. For example, anxiety is correlated with exaggerated fear towards
-non-threatening cues during conditioning and extinguished cues during extinction
-\citep{lissek2005, Duits2015}.
-
-Experimentally, aberrations in threat appraisal have been repeatedly observed
-in a litany of associative learning studies. Common to all of these studies,
-participants learn that a particular stimulus (CS+) predicts the occurrence
-of a negative outcome (e.g. shock, loud noise, aversive image). In simple conditioning,
-there is some evidence to suggest that individuals with anxiety exhibit elevated
-levels of response to threatening stimuli \citep{lissek2005, MinekaOehlberg2008,
-Duits2015}. Importantly, conditioning studies also suggest impaired safety learning
-in anxiety, wherein a stimulus never paired with an aversive outcome (CS-) is also
-feared \citep{Duits2015}. Other notable findings include impaired blocking,
-conditioned discrimination (AX+/BX-) (citations), and conditioned inhibition
-(A+, AB-) (citations).
-
-% I think when you come back to edit this, you need to highlight these findings
-% more in the context of what you are about to explain. Pessimistic inference
-% is both making bad things worse and, most importantly, that non-bad things
-% become bad. Although one question is how much to include the other less
-% studied paradigms
 
 \begin{figure}
   \centerline{%
@@ -255,15 +218,49 @@ conditioned discrimination (AX+/BX-) (citations), and conditioned inhibition
   \par Current parameters: Reward = 10, Shock = -10, gamma = 0.95.
 \end{figure}
 
-In our first result, we demonstrate one simple mechanism by which pessimistic
-inference and exaggerated threat appraisals may arise. In the *open field* environment,
-an agent is placed in a large grid world entirely empty except for two states,
-leading to positive and negative outcomes, respectively. Under complete control
-(objective or perceived), an agent in this environment in under no threat despite
-the presence of negative states. This is simply because, in a fully controllable
-world, an agent need not ever interact with the aversive state. In fact, an agent
-can decide to walk straight up to the aversive state and, insofar it does not
-choose to take one step further, will never be in any actual danger.
+In this first section, we demonstrate how learning under an assumption of a lack
+of future control naturally leads to pessimistic inference and second-order conditioning.
+A symptom central to all of the anxiety disorders is pessimistic inference,
+or a tendency to appraise the likelihood and/or severity of threatening situations
+out of proportion to their actual environmental contingencies \citep{dsm5, BeckClark1997,
+ClarkBeck2011}. For example, an individual with specific phobia may vastly exaggerate
+the probability of encountering their fear (e.g. a venomous spider) in their
+everyday lives. Anxious individuals will also tend to associate fear with cues
+tangentially related to signals of threat. For example, the same individual may
+begin to fear locations where they may encounter spider webs (e.g. basements).
+
+Pessimistic inference in anxiety is well-documented. In studies of self-reported beliefs,
+individuals with anxiety rate
+hypothetical future negative outcomes as being more likely to occur and worse to
+experience than non-anxious counterparts \citep{ButlerMathews1983, ButlerMathews1987,
+Foa1996, MacLeod1996, MacLeod1997, Luten1997, Stober1997, Borkovec1999, Maner2006,
+Mitte2007, Miranda2007}. In the laboratory, exaggerated threat appraisal in anxiety
+has traditionally been measured through fear conditioning. The results of these
+studies demonstrate that anxious individuals exhibit greater fear towards threatening
+cues, non-threatening cues, and extinguished threatening cues as compared to non-anxious
+counterparts \citep{lissek2005, MinekaOehlberg2008, Duits2015}. Importantly, threatening
+cues can become associated with secondary neutral cues, allowing negative value to
+spread citep{wessa2007}. In sum, anxiety is associated with inflated estimates of
+threat, both likelihood and value, and these estimates can spread from the source
+to distantly associated cues.
+
+In our first simulation, we demonstrate how this may come about. In the open field
+environment (Figure 1a), an agent is free to navigate a large grid world devoid
+of value except for two states: one rewarding and one aversive red. In this environment,
+the one-step transition structure is deterministic such that the environment
+fully respects the agent's choice. As such, the agent is under no threat despite
+the presence of a harmful state. Insofar that the agent never acts under a
+masochistic policy and intentionally approaches harm, the agent need not ever
+encounter the harmful state.
+
+The long-run value estimates learned by an optimistic agent (i.e. an agent expecting
+to be able to follow a reward-maximizing policy now and in the future) reflect this
+(Figure 1b). For an optimistic agent, all states in the open field environment,
+sans the harmful state itself, take on a positive value. This is unsurprising
+insofar that, except for the harmful state, the agent will always encounter
+a reward in the long-run no matter its starting position in the field.
+
+
 
 This is not so when deterministic control cannot be assumed. If an agent believes
 it is not in full control of its environment, then it cannot rule out the possibility
