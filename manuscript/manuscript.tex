@@ -16,7 +16,7 @@ Princeton, NJ 08540 \\
 \texttt{zorowitz@princeton.edu} \\
 \And
 Ida Momennejad \\
-columbia University\\
+Columbia University\\
 New York, NY 10027 \\
 \texttt{ida.m@columbia.edu} \\
 \And
@@ -45,121 +45,154 @@ reinforcement learning; avoidance; anxiety
 \startmain
 
 \section{Introduction}
-Many psychiatric disorders involve distortions in models of the external world
-and, correspondingly, aberrations of learning and decision making. As a normative
-framework, decision theory allows us to describe and pose quantita­tive questions
-about optimal and approximately optimal choice behavior \citep{DayanDaw2008} and
-is, therefore, a critical tool for modeling, understanding, and predicting the
-psychological and neurobiological mechanisms responsible for the abnormalities
-observed in psychiatric behavior \citep{HuysDawDayan2015}. Many recent investigations
-employing this approach have provided important insights into psychiatric symptoms,
-including anhedonia in major depression \citep{Rutledge2017}, mood instability
-in bipolar disorder \citep{EldarNiv2015, EldarDolanNiv2016},  habitual decision
-making in disorders of compulsivity \citep{gillan2016}, and hallucinations in
-schizophrenia \citep{powers2017, corlett2018}.
 
-Anxiety disorders (generalized anxiety disorder, social anxiety disorder, panic
-disorder, obsessive-compulsive disorder) represent the most common family of
-psychiatric disorders (citation). Despite the differences in the content of worry,
-all anxiety disorders share two core features: pessimistic inference and excessive
-avoidance. Pessimistic inference describes a tendency to appraise threatening
-situations as more frequent and/or more severe than they objectively are. This has
-been reliably observed experimentally, as in fear conditioning wherein individuals
-with anxiety exhibit exaggerated fear towards safe cues (CS-) and extinguished
-threatening cues \citep{lissek2005, Duits2015}, and clinically, through self-report
-(pick 3 citaitons). Excessive avoidance describes the corresponding tendency for
-individuals with anxiety to consistently flee or avoid threatening situations.
-Avoidance is often chosen even at the expense of potential reward (approch-avoidance
-conflict), and is frequently a major impediment to recovery \citep{Arnaudova2017}.
+Central to many psychiatric disorders is distortion to representations of the
+external world and, correspondingly, pronounced changes to learning and decision
+making. As a normative framework, decision theory allows us to describe and pose
+quantita­tive questions about optimal choice behavior \citep{DayanDaw2008} and is,
+therefore, a critical tool for modeling, understanding, and predicting the psychological
+and neurobiological mechanisms underlying psychiatric behavior \citep{maia2011, HuysDawDayan2015}.
+Recent investigations employing this framework have provided novel and important
+insights into psychiatric symptoms and disorders, including anhedonia in major depression \citep{Rutledge2017},
+mood instability in bipolar disorder \citep{EldarNiv2015, EldarDolanNiv2016},
+habitual behavior in obsessive compulsive and addictive disorders \citep{gillan2016}, and
+hallucinations in schizophrenia \citep{powers2017, corlett2018}.
 
-Recent studies have attempted to provide some computational models of this behavior
-\citep{Moutoussis2008, Maia2010}. For example, \citep{Maia2010} was able to show
-how reinforcement learning could explain sustained avoidance in the absence of
-repeated reinforcement, observed in rodents \citep{servatius2008} and something
-not explained by two-factor theory \citep{Krypotos2015}. As has been discussed
-elsewhere \citep{Moutoussis2017}, such accounts only explain the maintenance of
-avoidance in short timescales, but do not explain why resistant to change and
-why they do not go away in general. Such theories also do not explain the magnitude
-of pessimistic inference, or the fear generalization. A broader account is needed.
+The family of anxiety disorders (which includes generalized anxiety disorder, social
+anxiety disorder, panic disorder, and specific phobia) are characterized by excessive
+fear and worry about future negative outcomes, and represent the most common
+group of psychiatric disorders \citep{kessler2009}. Though the disorders typically
+differ in the types of objects or situations that induce fear or anxiety, all share
+a set of core disturbances to cognition and behavior. First, the anxiety disorders
+involve pessimistic inference, or a tendency to appraise threatening objects or
+situations as more likely and/or more severe than they objectively are. Clinical
+anxiety is also associated with second-order conditioning, or learning to fear
+neutral cues indirectly associated with threat cues. Finally, anxiety is associated
+with sustained avoidance, or the tendency for individuals to flee or avoid threatening
+situations. As an example, an individual is mugged in an alleyway. In a pathological
+response, this individual may exhibit persistent worry that it will happen again
+(pessimistic inference), increased anxiety towards the street or time of day
+at which it occurred (second-order conditioning), and increased effort to stay
+away from any cue which reminds them of the event (avoidance).
 
-In this article, we put forward a decision theoretic explanation of the core
-symptoms of anxiety. In sequential decision environments, we show how a loss of
-optimistic inference results in pessimistic inference, chronic avoidance, and
-generalization of fear.
+Several studies have attempted to provide some insight into why some of this
+may be in anxiety disorders \cite{Maia2010, norbury2018}, though no account has
+tied these symptoms together. For example, \citep{Maia2010} provided a simple
+account of how simple actor-critic reinforcement learning models could account
+for sustained avoidance in rodent shuttle-box experiments \citep{servatius2008}.
+As has been discussed elsewhere \citep{Moutoussis2017}, such an account fails to account for why avoidance
+is maintained even with non-threatening outcomes and do not account for why exposure
+therapy only works for some individuals. Other accounts have attempted to explain
+pessimistic inference (cite learning rate), but do not mention where from.
+
+In the remainder of this article, we present a simple decision theoretic account
+of how the core symptoms of anxiety may arise and be maintained. Specifically, we
+demonstrate that the loss of optimistic inference in the form of reduced expectations
+of future reward can yield negatively biased estimates of value in sequential
+decision environments. In such an event, pessimistic inference, second-order
+conditioning, and chronic avoidance naturally follow.
 
 \section{Methods}
 
 \subsection{Markov Decision Processes}
 
-Here, we briefly review the formalism of Markov decision processes (MDPs), which
-provide the foundation for our results. For more complete treatments of the
-subject, see Sutton \& Barto (1998, 2018) and Bertsekas \& Tsitsiklis (1996).
+Before moving forward, we first briefly review the formalism of Markov decision
+processes, which provide the framework for our results. For complete treatments,
+see \cite{SuttonBarto1998, SuttonBarto2018} and \cite{bertsekas2005}.
 
 A MDP is defined by a set of states, $S$, a set of actions, $A$, a reward
-function, $R(s,a)$ over state/action pairs, and a state transition distribution,
-$P(s'|s,a)$, where $a$ denotes a chosen action. States and rewards occur
-sequentially according to these one-step functions, driven by a series of
-actions; the goal is to learn to choose a probabilistic policy over actions,
-denoted by $\pi$, that maximizes the value function, $V^\pi(s)$, defined as the
-expected cumulative discounted reward:
+function defined over state/action pairs, $R(s,a)$, and a state transition distribution,
+$P(s'|s,a)$, where $a$ denotes a chosen action. In a MDP, states and rewards occur
+sequentially according to the one-step transition structure where transitions follow
+actions. The goal for an agent in a MDP is to learn to choose a policy, $\pi$, or
+mapping of state to action, that maximizes long-run expected reward. Here we define
+the value of a state under a policy, $V^\pi(s)$, as the expected cumulative discounted reward:
 
 $$ V^\pi(s) = \mathbb{E} \left[ \sum^{\infty}_{k=0} \gamma^k R_{t+k} | S_t = s \right] $$
 
-Here, $\gamma$ is a parameter controlling temporal discounting. The value function
-can also be defined recursively as the sum of the immediate reward of the action
-chosen in that state, $R(s, a)$, and the value of its successor state $s’$,
-averaged over possible actions, $a$, and transitions that would occur if the agent
-chose according to $\pi$:
+where $\gamma$ is the temporal discounting parameter, controlling the weighting
+of distant future rewards. The value function can be defined recursively as the
+sum of the immediate reward following an action chosen in a state, $R(s, a)$, and
+the value of its successor state $s’$, averaged over potential future actions, $a$,
+and transitions according to the current policy $\pi$:
 
-$$ V^\pi(s) = \sum_a \pi(a|s) \left[ R(s,a) + \sum_{s'} P(s'|s,a) \gamma V^\pi (S') \right] $$
+$$ V^\pi(s) = \sum_a \pi(a|s) \sum_{s',r}p(s',r|s,a) \left[ r + \gamma v(s') \right] $$
 
-The value function under the optimal policy is given by:
+Under the optimal policy, the value function is given by:
 
 $$ V^*(s) = \max_a \mathbb{E} \left[ \sum^{\infty}_{k=0} \gamma^k R_{t+k} | S_t = s \right] $$
 
-$$ = \max_a \left[ R(s,a) + \sum_{s'} P(s'|s,a) \gamma V^\pi (S') \right] $$
+$$ = \max_a \sum_{s',r}p(s',r|s,a) \left[ r + \gamma v_*(s') \right] $$
 
-Knowledge of the value function can help to guide choices. For instance, we can
-define the state-action value function as the value of choosing action $a$ and
-following $\pi$ thereafter:
+Using the formalisms above, the value of one particular action in a state under
+the optimal policy is defined as:
 
 $$ Q^\pi(s,a) = \mathbb{E} \left[ \sum^{\infty}_{k=0} \gamma^k R_{t+k} | S_t = s \right] $$
 
-$$ = R(s,a) + \sum_{s'} P(s'|s,a) \gamma V^\pi (S') $$
+$$ = \sum_{s',r}p(s',r|s,a) \left[ r + \gamma v_*(s') \right] $$
 
-Then at any state one could choose the action that maximizes $Q^\pi(s,a)$. Formally
-this defines a new policy, which is as good or better than the baseline policy
-$\pi$; analogously, Eq 2 can be used to define the optimal state-action value
-function, the maximization of which selects optimal actions. Note that it is
-possible to write a recursive definition for $Q$ in the same manner as Eq 1, and
-work directly with the state-action values, rather than deriving them indirectly
-from $V$.
+Insofar that the value of a state under the optimal policy is defined as the best
+action under that state, we can re-express the above equivalently as:
+
+$$ q_*(s,a) = \sum_{s',r}p(s',r|s,a) \left[ r + \gamma \max_{a'} q_*(s',a') \right] $$
+
+Thus in a conventional MDP, the value of states in the environment under the optimal
+policy assumes the agent is able to act according to the optimal policy in the future.
 
 \subsection{Robust Control}
+In the previous section, we observed that the value of a state and its associated
+state-action pairs are a function of the environment transition distribution and
+the best future action. In standard MDP problems, it is typically assumed that the
+transition distribution is known and accurate, and that the agent is consistently
+able to operate under the optimal policy in the future. In this section, we introduce
+a formalism deviating from these standard assumptions.
 
-To create the symptoms of anxiety, we need a loss of control. This can come in
-two forms. First is through the state transition distribution, $P(s'|s,a)$.
-Normally, we assume the world is deterministic; in other words, an agent's chosen
-action, $a$ leads the agent to the desired successor state, $s'$. In a stochastic
-environment, however, an agent may instead transition to an undesired state, $s^*$.
+Central to many theories of clinical anxiety is a perceived loss of control (see
+discussion for elaboration). In the MDP framework described above, this may come
+in one of several forms. First, an agent may perceive the transition structure
+of the environment to be less reliable than it actually is. Put another way, an
+agent may have a biased expectation that, despite choosing an action $a$ with the
+intent of transition to state $s'$, the agent may instead transition to an alternate,
+undesired state $s^$. In the case of clinical anxiety, the expectation may be more
+dire, that the environment is "adversarial" is likely to transition an agent, not
+randomly, but to the worse states.
 
-Importantly, in the clinical literature, pathological anxiety is also associated
-with a lack of perceived control (Gallagher et al., 2014). Studies suggest that
-this belief mediates anxiety (ref?). This can come in whatever form.
+Second, an agent may doubt its own agentive control. An agent may expect to be
+able to choose the best possible action for itself in the present, but may not be
+confident it will still be able to decide optimally for itself in the future. In
+either event, following the value computations defined above, we should expect
+the value estimates for such an agent to diminish. If an agent believes itself
+or the environment to be unreliable, then the agent cannot be optimistic about
+its future and should instead adopt a different policy.
 
-Alternately, an agent may choose optimally in the present but may be uncertain of
-its choice control in the future. In such a case, we deviate from the optimal
-policy in the future. We can adopt a different function. There are a number to
-choose from \citep{Garcia2015}. Here we adopt the beta-pessimism criterion
-\citep{Gaskett2003}:
+These sorts of problems have been explored in the safe reinforcement learning
+and robust control literature \citep{Garcia2015}. There, we are concerned
+with programming agents that identify the optimal policy under pessimistic
+assumptions. A number of approaches have been proposed in that literature. Here,
+we focus on one particular simple implemented proposed by \cite{Gaskett2003}, namely
+*w-pessimism*:
 
-$$ V(s') = \beta \max_{a'} Q(s',a') + (1 - \beta) \min_{a'} Q(s',a') $$
+$$ V(s') = w \max_{a'} q(s',a') + (1 - w) \min_{a'} q(s',a') $$
 
-where $\beta$ controls the degree of pessimism. When $\beta = 1$, an agent expects
-complete control to choose the best action (best-case criterion); when $\beta = 0$,
-an agent expects the  worst future case; and when $\beta = 0.5$, an agent expects
-randomness. (We are not committed to this particular instantiation; it is simply
-a convenient notation. Other parameterizations work equally well, see appendix.)
+such that the state value under the optimal policy is defined as:
+
+$$ V(s) = \max_a \sum_{s',r}p(s',r|s,a) \left[ r + \gamma \left( w \max_{a'} q(s',a') + (1 - w) \min_{a'} q(s',a') \right) \right] $$
+
+In this formalism, $w$ controls the degree of pessimism. When $\w = 1$, an agent
+is maximally optimistic and fully expects to act according to the best possible actions
+in the future. When $w = 0$, the agent is maximally pessimistic and fully expects
+to act according to the worst possible actions in the future. When $w = 0.5$,
+the weighs the best and worst possible future actions equally.
+
+We note that we are not committed to this particular implementation of a pessimistic
+agent. As mentioned above, an alternative parameterization would have been to
+program an agent with a belief in an adversarial environment, preferentially
+transitioning it to worse states. Insofar that these two terms are multiplicative
+in value calculations, either implementation should yield similar results. Similarly,
+the w-pessimism function could easily be replaced with other functions (e.g. softmax
+with negative inverse temperature). This formalism is simply convenient and is
+useful for demonstrating the points we demonstrate below. It is not a substantive
+claim about anxiety.
 
 \subsection{Simulations}
 
@@ -185,6 +218,16 @@ rated these as more likely than non-clinical individuals \citep{ButlerMathews198
 ButlerMathews1987, Foa1996, MacLeod1996, MacLeod1997, Luten1997, Stober1997,
 Borkovec1999}; a finding that has been replicated more recently \citep{Maner2006,
 Mitte2007, Miranda2007}.
+
+In self-report,
+individuals with anxiety rate hypothetical future negative outcomes as
+being more likely to occur and worse to experience than non-anxious counterparts
+\citep{ButlerMathews1983, ButlerMathews1987, Foa1996, MacLeod1996, MacLeod1997,
+Luten1997, Stober1997, Borkovec1999, Maner2006, Mitte2007, Miranda2007}. In the
+laboratory, individuals with anxiety demonstrate excessive fear in fear conditioning
+paradigms. For example, anxiety is correlated with exaggerated fear towards
+non-threatening cues during conditioning and extinguished cues during extinction
+\citep{lissek2005, Duits2015}.
 
 Experimentally, aberrations in threat appraisal have been repeatedly observed
 in a litany of associative learning studies. Common to all of these studies,
@@ -257,6 +300,9 @@ observed in anxiety disorders is can be highly disruptive to everyday functionin
 \cite{Salter2004} and may work to sustain anxious appraisals and behavior. For
 example, an individual with social anxiety may avoid attending large social events
 for fear of public embarrassment only to never learn that such worry is not justified.
+
+Avoidance is often chosen even at the expense of potential reward (approch-avoidance
+conflict), and is frequently a major impediment to recovery \citep{Arnaudova2017}.
 
 In the laboratory, avoidance has been measured in a variety of ways. In animal
 models of anxiety, anxious rodents are found to exhibit avoidance learning more
