@@ -1,4 +1,4 @@
-environment\documentclass[11pt]{article} % For LaTeX2e
+\documentclass[11pt]{article} % For LaTeX2e
 \usepackage{manuscript, palatino}
 \usepackage{graphicx}
 \usepackage{amsfonts, amsmath}
@@ -203,8 +203,8 @@ values under the optimal policy, $Q_*(s,a)$, were solved for directly through
 Q-value iteration \citep{SuttonBarto1998,SuttonBarto1998,bertsekas2005}. The
 details of this algorithm are presented in the appendix. Model parameters are
 reported for each environment in their corresponding sections. All simulations
-were carried out using the scientific python distribution and are publicly available
-at on Github (https://github.com/szorowi1/SecretFunTimes).
+were carried out with the python programming language and are publicly available
+on Github (https://github.com/szorowi1/SecretFunTimes).
 
 \section{Results}
 
@@ -214,8 +214,11 @@ at on Github (https://github.com/szorowi1/SecretFunTimes).
   \centerline{%
     \resizebox{1.0\textwidth}{!}{\includegraphics[trim={0 0 0 0},clip]{../figures/01_field.png}}%
   }
-  \caption{\textbf{Open Field}}
-  \par Current parameters: Reward = 10, Shock = -10, gamma = 0.95.
+  \par Figure 1: The open field environment is a large deterministic gridworld sans one rewarding
+  (blue) and aversive (red) state (A). Under optimistic learning conditions (B), all states except
+  for the harmful one become positive. Under pessimistic conditions (C), negative value spreads
+  from the source to its antecedent states. The extent of the spread is worse for increased
+  pessimism (D). (Parameters: $\gamma = 0.95$)
 \end{figure}
 
 In this first section, we demonstrate how learning under an assumption of a lack
@@ -260,32 +263,24 @@ sans the harmful state itself, take on a positive value. This is unsurprising
 insofar that, except for the harmful state, the agent will always encounter
 a reward in the long-run no matter its starting position in the field.
 
+The same cannot be said for a the pessimistic agent. If an agent doubts its future
+ability to act in according with the optimal policy, then it cannot rule out that,
+in the future, it may inadvertently encounter the harmful state. This is more so
+likely if the agent is already proximal to the harmful state. Under this pessimistic
+belief, the possibility of future harm is no longer zero, as it is for the optimistic
+agent, and thus negative value can propagate from the states antecedent to harm,
+back to their respective antecedents and so on. The extent of this spread will depend
+on the strength of the pessimistic belief (Figures 1c, 1d). With increasing pessimism,
+harmful outcomes are assigned greater credence and thus exert greater and wider
+influence on antecedent states.
 
-
-This is not so when deterministic control cannot be assumed. If an agent believes
-it is not in full control of its environment, then it cannot rule out the possibility
-that it may inadvertently encounter the negative state at some point in the future,
-especially if it veers to close to the state. This is true irrespective of whether
-the agent believes it cannot guarantee its own future competency or the benevolence
-of the environment. Importantly, this belief need not match the true environmental
-statistics; belief is enough.
-
-The long-run state values under different beliefs are plotted in Figure 1. As
-expected, under optimistic beliefs (Figure 1b) the entire environment sans negative
-state takes on a positive value (close to the positive state itself). As this belief
-breaks down, we observe a different pattern in the long-run state values. When
-future occupancy of the negative state becomes a non-zero probability, the undesired
-action transition exerts influence on action-outcome calculations, back-propagating,
-and thereby infecting antecedent states. As the agent's belief becomes increasingly
-pessimistic, the more the worst possible action exerts influence and the more
-negative, on average, the state-space grows.
-
-In the breakdown of perceived control then, negative states can grow worse (i.e.
-more predictive of future negative outcome) and otherwise positive states can too.
-This occurs as a simple result that if control not guaranteed, cannot guaranteed
-bad things wont happen.
-
-% I think you want to explain second order conditioning in PTSD in this context.
+In sequential decision environments then, a perceived lack of self-efficacy can
+result in the propagation of negative value from potential future harms. Such a
+pessimistic agent may correspondingly report an increased likelihood of threat
+(i.e. a greater number of threatening states), increased severity of threat (i.e.
+states with more negative value), and fear of states antecedent to the fear source.
+As such, pessimistic learning can account for two of the hallmark symptoms of
+the anxiety disorders.
 
 \subsection{Avoidance}
 
@@ -658,7 +653,6 @@ area for future research.
 \bibliography{citations}
 
 \section{Appendix}
-\subsection{Algorithms}
 
 \begin{algorithm}
   \caption{Value Iteration}
@@ -674,24 +668,6 @@ area for future research.
       \State $\Delta \leftarrow \max(\Delta, |v - V(s)|)$
     \EndLoop
   \EndWhile
-
-\end{algorithm}
-
-\begin{algorithm}
-  \caption{Betamax Temporal Difference Learning}
-
-  \State Algorithm parameters: step size $\eta \in (0, 1)$, small $\epsilon > 0$
-  \State Initialize $Q(s,a)$, for all $s \in S$, $a \in A$ arbitrarily, except that $Q(terminal,\cdot) = 0$
-  \State
-  \Loop \ for each episode
-    \State Initialize $S$
-    \While{$S \notin S(terminal)$}
-      \State Choose $A$ from $S$ using policy derived from $Q$
-      \State Take action $A$, observe $R, S$
-      \State $Q(S, A) \leftarrow Q(S, A) + \eta \left[ R + \gamma \max_a Q(S',a) − Q(S, A) \right] $
-      \State $S \leftarrow S'$
-    \EndWhile
-  \EndLoop
 
 \end{algorithm}
 
