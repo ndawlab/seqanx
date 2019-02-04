@@ -6,7 +6,7 @@
 
 \usepackage{natbib}
 
-\title{Anxiety: a decision-theoretic perspective}
+\title{Title Pending}
 
 \author{
 Samuel Zorowitz \\
@@ -35,11 +35,11 @@ Princeton, NJ 08540 \\
 \maketitle
 
 \begin{abstract}
-To be filled in
+Pending
 \end{abstract}
 
 \keywords{
-reinforcement learning; avoidance; anxiety
+decision theory; computational psychiatry; anxiety; value iteration
 }
 
 \startmain
@@ -116,18 +116,18 @@ In the following sections, we present the results of simulations of pessimistic 
 
 \subsection{Pessimistic Inference}
 
+In this first section, we demonstrate how learning under an assumption of a lack of future control naturally leads to pessimistic inference and second-order conditioning. A symptom central to all of the anxiety disorders is pessimistic inference, or a tendency to appraise the likelihood and/or severity of threatening situations out of proportion to their actual environmental contingencies \citep{dsm5, BeckClark1997, ClarkBeck2011}. For example, an individual with specific phobia may vastly exaggerate the probability of encountering their fear (e.g. a venomous spider) in their everyday lives. Anxious individuals will also tend to associate fear with cues tangentially related to signals of threat. For example, the same individual may begin to fear locations where they may encounter spider webs (e.g. basements).
+
+Pessimistic inference in anxiety is well-documented. In studies of self-reported beliefs, individuals with anxiety rate hypothetical future negative outcomes as being more likely to occur and worse to experience than non-anxious counterparts \citep{ButlerMathews1983, ButlerMathews1987, Foa1996, MacLeod1996, MacLeod1997, Luten1997, Stober1997, Borkovec1999, Maner2006, Mitte2007, Miranda2007}. In the laboratory, exaggerated threat appraisal in anxiety has traditionally been measured through fear conditioning. The results of these studies demonstrate that anxious individuals exhibit greater fear towards threatening cues, non-threatening cues, and extinguished threatening cues as compared to non-anxious counterparts \citep{lissek2005, MinekaOehlberg2008, Duits2015}. Importantly, threatening cues can become associated with secondary neutral cues, allowing negative value to spread \citep{wessa2007}. In sum, anxiety is associated with inflated estimates of threat, both likelihood and value, and these estimates can spread from the source to distantly associated cues.
+
+In our first simulation, we demonstrate how this may come about. In the open field environment (Figure 1a), an agent is free to navigate a large grid world devoid of value except for two states: one rewarding and one aversive red. In this environment, the one-step transition structure is deterministic such that the environment fully respects the agent's choice. As such, the agent is under no threat despite the presence of a harmful state. Insofar that the agent never acts under a masochistic policy and intentionally approaches harm, the agent need not ever encounter the harmful state.
+
 \begin{figure}
   \centerline{%
     \resizebox{1.0\textwidth}{!}{\includegraphics[trim={0 0 0 0},clip]{../figures/01_field.png}}%
   }
   \par \textbf{Figure 1:} The open field is a deterministic gridworld with only one rewarding (blue) and aversive (red) state (A). For an optimistic agent ($w=1$), all states (other than the harmful state) take on positive value (B). For a pessimistic agent ($w=0.5$), negative value spreads from the source to antecedent states (C). With increasing pessimism ($w=0$), the extent of the spread grows worse (D). (Parameters: $\gamma = 0.95$)
 \end{figure}
-
-In this first section, we demonstrate how learning under an assumption of a lack of future control naturally leads to pessimistic inference and second-order conditioning. A symptom central to all of the anxiety disorders is pessimistic inference, or a tendency to appraise the likelihood and/or severity of threatening situations out of proportion to their actual environmental contingencies \citep{dsm5, BeckClark1997, ClarkBeck2011}. For example, an individual with specific phobia may vastly exaggerate the probability of encountering their fear (e.g. a venomous spider) in their everyday lives. Anxious individuals will also tend to associate fear with cues tangentially related to signals of threat. For example, the same individual may begin to fear locations where they may encounter spider webs (e.g. basements).
-
-Pessimistic inference in anxiety is well-documented. In studies of self-reported beliefs, individuals with anxiety rate hypothetical future negative outcomes as being more likely to occur and worse to experience than non-anxious counterparts \citep{ButlerMathews1983, ButlerMathews1987, Foa1996, MacLeod1996, MacLeod1997, Luten1997, Stober1997, Borkovec1999, Maner2006, Mitte2007, Miranda2007}. In the laboratory, exaggerated threat appraisal in anxiety has traditionally been measured through fear conditioning. The results of these studies demonstrate that anxious individuals exhibit greater fear towards threatening cues, non-threatening cues, and extinguished threatening cues as compared to non-anxious counterparts \citep{lissek2005, MinekaOehlberg2008, Duits2015}. Importantly, threatening cues can become associated with secondary neutral cues, allowing negative value to spread \citep{wessa2007}. In sum, anxiety is associated with inflated estimates of threat, both likelihood and value, and these estimates can spread from the source to distantly associated cues.
-
-In our first simulation, we demonstrate how this may come about. In the open field environment (Figure 1a), an agent is free to navigate a large grid world devoid of value except for two states: one rewarding and one aversive red. In this environment, the one-step transition structure is deterministic such that the environment fully respects the agent's choice. As such, the agent is under no threat despite the presence of a harmful state. Insofar that the agent never acts under a masochistic policy and intentionally approaches harm, the agent need not ever encounter the harmful state.
 
 The long-run value estimates learned by an optimistic agent (i.e. an agent expecting to be able to follow a reward-maximizing policy now and in the future) reflect this (Figure 1b). For an optimistic agent, all states in the open field environment, sans the harmful state itself, take on a positive value. This is unsurprising insofar that, except for the harmful state, the agent will always encounter a reward in the long-run no matter its starting position in the field.
 
@@ -137,18 +137,18 @@ In sequential decision environments then, a perceived lack of self-efficacy can 
 
 \subsection{Avoidance}
 
+In addition to pessimistic inference, all anxiety disorders share pathological avoidance as core symptom \citep{dsm5, Krypotos2015, Arnaudova2017}. Avoidance behaviors seek to increase or maintain the temporal, physical and/or mental distance between an individual and a threatening situation. Although avoidance is a natural response to danger, excessive avoidance as is observed in anxiety disorders can be highly disruptive to everyday functioning \citep{Salter2004} and frequently function so as maintain anxiety by preventing extinction \citep{Arnaudova2017}. For example, an individual with social anxiety may avoid attending large social events for fear of public embarrassment only to never learn that such worry is not justified.
+
+Avoidance behaviors in anxiety have been studied using a variety of methods. Perhaps the most classic paradigm is the behavioral avoidance test \citep{bandura1977}, wherein participants complete a number of tasks involving a feared object or situation and the number of tasks completed (or lack thereof) is a measure of avoidance. Computerized avoidance tasks have become increasingly common, and increased distance from virtual threat has been found to correlate with anxiety \citep{Bach2014, Bach2017, Sheynin2014}.
+
+There is a long history of models attempting to explain avoidance learning. The fundamental challenge is explaining how an action can be reinforced in the absence of an outcome. Two-factor theory was the explanation for a long while, but suffered from a number of noteworthy criticisms \citep{Krypotos2015}. Recent work has revitalized two-factor theory and integrated it with reinforcement learning \citep{Moutoussis2008, Maia2010}, and in the process addressing several criticisms of two-factor theory. As has been discussed elsewhere \citep{Moutoussis2017}, such accounts only explain the maintenance of avoidance in short timescales, but do not explain why resistant to change and why they do not go away in general.
+
 \begin{figure}
   \centerline{%
     \resizebox{1.0\textwidth}{!}{\includegraphics[trim={0 0 0 0},clip]{../figures/02_cliff.png}}%
   }
   \par \textbf{Figure 2:} Cliff-walking is a deterministic gridworld where an agent must navigate from one side (S) to the goal on the other side (G) (A). Every step costs the agent ($r=-1$) but stepping off the cliff results in great harm ($r=-100$). An optimistic agent learns to travel the shortest (loss-minimizing) path along the cliff (B). For a pessimistic agent ($w=0.8$), the potential for harm yields an optimal policy that maintains distance from the cliff's edge (C). With increasing pessimism ($w=0.6$), the agent learns an optimal path off the cliff so as to minimize unnecessary steps prior to its perceived inevitable harm (D). (Parameters: $\gamma = 1$)
 \end{figure}
-
-In addition to pessimistic inference, all anxiety disorders share pathological avoidance as core symptom \citep{dsm5, Krypotos2015, Arnaudova2017}. Avoidance behaviors seek to increase or maintain the temporal, physical and/or mental distance between an individual and a threatening situation. Although avoidance is a natural response to danger, excessive avoidance as is observed in anxiety disorders can be highly disruptive to everyday functioning \citep{Salter2004} and frequently function so as maintain anxiety by preventing extinction \citep{Arnaudova2017}. For example, an individual with social anxiety may avoid attending large social events for fear of public embarrassment only to never learn that such worry is not justified.
-
-Avoidance behaviors in anxiety have been studied using a variety of methods. Perhaps the most classic paradigm is the behavioral avoidance test \citep{bandura1977}, wherein participants complete a number of tasks involving a feared object or situation and the number of tasks completed (or lack thereof) is a measure of avoidance. Computerized avoidance tasks have become increasingly common, and increased distance from virtual threat has been found to correlate with anxiety \citep{Bach2014, Bach2017, Sheynin2014}.
-
-There is a long history of models attempting to explain avoidance learning. The fundamental challenge is explaining how an action can be reinforced in the absence of an outcome. Two-factor theory was the explanation for a long while, but suffered from a number of noteworthy criticisms \citep{Krypotos2015}. Recent work has revitalized two-factor theory and integrated it with reinforcement learning \citep{Moutoussis2008, Maia2010}, and in the process addressing several criticisms of two-factor theory. As has been discussed elsewhere \citep{Moutoussis2017}, such accounts only explain the maintenance of avoidance in short timescales, but do not explain why resistant to change and why they do not go away in general.
 
 In our second simulation, we demonstrate how pessimistic learning can yield sustained avoidance. In the cliff-walking environment \citep{SuttonBarto1998, SuttonBarto2018, Gaskett2003}, an agent must navigate from a start on side of the map to the other (Figure 2a). The agent experiences a small penalty for every step it takes. The shortest (least costly) path is along the cliff's edge; if the agent steps off the cliff, however, it incurs a much larger penalty. As in the first environment, we assume a deterministic transition structure.
 
@@ -160,76 +160,75 @@ Under pessimistic learning then, a perceived lack of self-efficacy can yield the
 
 \subsection{Approach-Avoidance Conflict}
 
-Next, we turn our attention towards a related phenomenon: a bias towards avoidance in approach-avoidance conflict. In environments with correlated risk and rewards, a bias towards avoidance can ultimately result in fewer expected rewards and worse long-run returns. Returning to the example above, an individual with social anxiety may forgo social situations to avoid the risk of social embarrassment at the expense of friendships, etc. This is another way in which pathological anxiety can be disruptive to everyday functioning.
+Next, we turn our attention to a related phenomenon observed in anxiety: a bias towards avoidance during approach-avoidance conflict \citep{aupperle2010}. In situations where the potential for reward and harm are correlated,
+anxiety predicts the tendency to forego reward in favor of minimizing the risk of threat. As a consequence, individuals with anxiety may experience fewer rewards in their environment as compared to non-anxious individuals. For example, an individual with social anxiety may avoid a party for fear of social embarrassment at the expense of positive social interactions with friends. This is a primary mechanism by which clinical anxiety can disrupt everyday functioning.
 
-Experimentally, there is a long history of measuring behavior during approach-avoidance conflict in individuals with anxiety (citation, maybe yin-yang anxiety paper). One popular paradigm is the balloon analog risk task (BART) \citep{Lejuez2002}, which has been shown to correlate with anxiety \cite{Maner2007, Giorgetta2012}. In the task, a participant pumps a balloon with air. For each pump, the participant earns points. If she pumps too much, the balloon pops and she loses all points. The participant must decide within each episode when to stop pumping. Leave time is the measure of behavior, with earlier leave times in anxiety suggesting a greater tendency towards avoidance.
+A relationship between anxiety and biased decision making in approach-avoidance conflict is well-documented in the empirical literature. One common measure is the balloon analog risk task (BART) \citep{Lejuez2002}. The task is straightforward: a participant inflates a virtual balloon, one pump at a time. The more inflated the balloon, the more points the participant earns. With increasing pumps, however, comes the risk of the balloon popping and the loss of all earned points so far. Thus, there is a conflict: a participant can choose to pump the balloon more to earn more points, at the risk of the balloon popping; alternately, the participant can choose to end the trial earlier with fewer points earned. Previous studies have found that anxiety is correlated with earlier leaving times, or a greater tendency to avoid risk \cite{Maner2007, Giorgetta2012}.
 
 \begin{figure}
   \centerline{%
     \resizebox{1.0\textwidth}{!}{\includegraphics[trim={0 0 0 0},clip]{../figures/03_fid.png}}%
   }
-  \caption{\textbf{BART}}
-  \par remember to add parameters
+  \par \textbf{Figure 3:} The Balloon Analog Risk Task (BART). Risk of the balloon popping increases with each pump (top row). An optimistic agent ($w=1$) continues to pump until the risk of losing all points earned outweighs the marginal value of one additional pump (second row). A pessimistic agent ($w=0.8$) is less confident that it will make the optimal decision in the future, and thus leaves earlier (third row). Leaving time becomes sooner with increasing pessimism ($w=0.6$) (bottom row). (Parameters: $\gamma = 1$.)
 \end{figure}
 
-Our sequential model of decision making easily explains these results. A schematic of the task is presented in Figure 3. Under optimistic beliefs, points should travel back from the mean. Under pessimistic assumptions, however, different degrees of the worst outcome backpropagate. At a certain point, the perceived cost of staying outweighs the guaranteed gains of leaving. Thus, patients with anxiety leave earlier.
+This result can be accounted for by a loss of confidence in future reliability. A simulation of performance on the BART is shown in Figure 3. For an optimistic agent ($w=1$), the optimal policy is to continue pumping until the risk of popping is all but guaranteed. The optimal policy for pessimistic agents differ. Under a loss of confidence for future action, pessimistic agents cannot be certain they will make optimal choices in the future. As such, negative value propagates backwards resulting in earlier leaving times. The latency of leaving is dependent on the strength of the pessimistic belief.
 
-We can explain similar findings with the flight initiation distance \citep{Mobbs2018, Mobbs2019}. One thing our model cannot explain is the neural difference between fast and slow escape. Indeed, our model cannot capture all but perhaps is relevant for certain calculations. One could imagine these beliefs interacting in such a way to change the distance calculations that are necessary for mediating between passive and active defense responses.
+Interestingly, these results are similar to recent findings regarding flight initiation distance and anxiety \citep{Mobbs2018, Mobbs2019}. Flight initiation distance refers to a measure from behavioral ecology that assesses the leaving time of a foraging animal at risk of predation. In classic flight initiation scenarios, an animal can continue to forage and exploit resources, but the longer it does so the greater the risk it will encounter a predator. Thus, flight initiation scenarios are similar in structure to approach-avoidance conflict and the BART. Recently, \cite{Mobbs2019} found that anxiety is correlated with earlier leaving times in virtual flight initiation tasks. Interestingly, the authors make a distinction between "fast-" and "slow-attacking" predators, and find that trait anxiety is only correlated only in behavioral response to the latter. The findings here draw upon an emerging literature of distinct neural systems mediating "cognitive" vs. "reactive" threat responses, where anxiety evidently impacts the deliberative, cognitive responses. Thus, it is important to note the present theory can account for anxious approach-avoidance behavior in some, but certainly not all, threatening scenarios.
 
-This can also be used to explain behavioral inhibition \citep{bach2015, khemka2017}. The idea is slightly different than what is advocated. The claim here is that in anxious individuals, the Q-values should be closer together, and thus there should be longer waiting time.
+These results may also be related to recent work on the computational mechanisms underlying behavioral inhibition, a temperament linked to anxiety \citep{bach2015, khemka2017}. \cite{bach2015} argues that delayed behavioral responses under threat are normative under the assumption that a pause in behavior (e.g. freezing) can be useful for surveying a threatening environment, avoiding detection by predators, and potentially waiting out a nearby threat. Behavioral inhibition, it is argued, is a useful Pavlovian heuristic that has evolved over time. The current models may predict similar results. Insofar that a loss of confidence in future action yields more negative estimates of action values, then the best action may often be brought closer in value to its alternatives. As such, a pessimistic agent may face increased decision conflict as compared to a non-anxious counterpart and therefore show increased response times. This is not to argue against this particular model of behavioral inhibition, but just to say that our account may yield similar behaviors.
 
-\subsection{Planning}
+\subsection{Relation to Depression}
 
-In this next section, we review the literature on aversive pruning. In large, multi-step sequential decision environments, the space of all possible sequences of choices grows exponentially larger with increasing sequence length. As such, it is infeasible for decision making agents to exhaustively explore all possible sequences select that which maximizes reward from the entire set. Heuristics for narrowing the search space then are not only plausible but beneficial for a decision making agent.
+As an extension of approach-avoidance conflict, we next want to discuss the relationship between anxiety and depression. Anxiety and depression are highly comorbid, with roughly 45\% of individuals with a lifetime depression diagnosis also diagnosed with at least one anxiety disorder \citep{kessler2015}. Given this, many have clinical theories assume that depression and anxiety are slightly variant manifestations of the same underlying mechanisms involving negative affect (for review, see \cite{jacobson2014}).
 
-One such heuristic that has been proposed in the literature is aversive pruning \citep{Huys2012}. Aversive pruning is defined as a Pavlovian response to encountering a large loss in planning such that sequences involving large losses are discarded from further evaluation. An example of scenario is presented in Figure 4. The prediction in such an environment is that an agent would discard the branch of the decision tree involving an immediate large negative loss even though this branch objectively contains the reward maximizing (loss minimizing) sequence of choices.
-
-\cite{Huys2012} (and later \cite{Lally2017}) tested this prediction in the choice envrionment displayed in Figure 4. Participants received extensive training in this decision tree environment (first without outcomes and then later with rewards) in order to facilitate planning. In free-planning trials, many participants exhibited this Pavlovian bias, rejecting choice sequences which involved the large loss even when the sequence was objectively reward maximizing (loss minimizing). Importantly \cite{Huys2012} and \cite{Lally2017} found the degree of aversive pruning was correlated with depressive and anxiety symptoms, respectively.
-
-The aversive pruning principle makes tremendous sense and draws on a robust literature of heuristics and computational shortcuts for circumventing computationally intractable cognitive processes. It is important to note, however, that a control interpretation also makes similar predictions. Figure 4b-d shows the preferred routes of simulated agents in the same environments under increasingly pessimistic expectations of future actions. As can be observed, pessimistic agents are similarly likely to avoid the branch with the large loss, though for different reasons. Under the pessimistic case, the agent is increasingly less confident that the large gains later in sequence will be realized; as such, the agent is less confident that the initial large loss will be offset. Consequently, pessimistic agents would prefer the branch with smaller losses (even if this is objectively suboptimal). This prediction is similarly consistent with the finding that avoidance of the initial large loss is correlated with anxiety \cite{Lally2017}.
-
-An interpretation like this would be consistent with reduced beliefs in one's own competency in such an environment. This is not strictly surprising. Planning multi-choice sequences even in relatively simple environments like those used in these experiments still ostensibly require working memory ability to keep in mind the possible consequences along each branch. Insofar that working memory ability is disrupted in anxiety disorders \citep{Moran2016}, a pessimistic belief may be justified and possibly optimal.
-
-It is also worht noting that the two theories can be easily disentangled with a simple manipulation of the choice environment. The two theories predict different choices when the large loss comes later in sequence. For aversive pruning, late large losses should have little effect on choice behavior. For pessimistic learning, however, the value of large losses should back-propagate and contaminate its associated branch. Future experiments can tease these apart as tests of the theory.
-
-\begin{figure}
-  \centerline{%
-    \resizebox{1.0\textwidth}{!}{\includegraphics[trim={0 0 0 0},clip]{../figures/04_tree.png}}%
-  }
-  \caption{\textbf{Decision Tree}}
-  \par remember to add parameters
-\end{figure}
-
-\subsection{Free Choice Premium}
-
-If an agent is confident that their compentency in decision-making in intact, then it follows that situations in which an individual is able to make a choice should be preferable to situations in which an individual is not. At worst, an agent is no better off than if they had not made a choice; at best, an agent is better able to steer themselves toward desirable outcomes. Such is the logic that underlies an increasingly robust literature suggesting choice is inherently valuable \citep{Leotti2010}.
-
-This free choice premium has been demonstrated multiple times in humans \citep{Suzuki1997, Leotti2011, Leotti2014, Cockburn2014} using a variety of decision paradigms. For the present purposes, we will describe the experiments presented in \citep{Leotti2011, Leotti2014}. In these experiments, participants complete a two-stage decision making task (Figure 5). In the first stage, participants are make a choice between two cues: one leading to free choice and the other leading to a fixed choice. In the second stage, participants are able to choose between a second set of cues (free choice) or are forced to choose a cue (fixed choice). Unbeknownst to participants, all cues yield reward following the same outcome distribution; thus, no cue is advantageous in the long-run. The free choice premium is measured as a preference for the cue leading to free choice. \cite{Leotti2011, Leotti2014} find participants still prefer the free choice cue, despite this conferring no objective benefit to participants.
-
-Insofar that this effect is contingent on the belief of one's own competency, it stands to reason that this free choice premium should be absent in individuals with anxiety and anxious control beliefs. We demonstrate this effect in Figure 5. In each trial, the reward outcomes are equal for all options (-1, 1). In individuals with increasingly pessimistic beliefs, the worst outcome in free choice is increasingly back-propagated to the free-choice cue, thereby making it less attractive than the fixed choice cue. Hence, pessimistic learners, on average, do not exhibit this choice bias.
-
-To our knowledge this prediction has not been empirically tested.
-
-\begin{figure}
-  \centerline{%
-    \resizebox{1.0\textwidth}{!}{\includegraphics[trim={0 0 0 0},clip]{../figures/05_choice.png}}%
-  }
-  \caption{\textbf{Free Choice Premium}}
-  \par remember to add parameters
-\end{figure}
-
-\subsection{Longitudinal Progression}
-
-In this final section, we want to discuss the relationship between anxiety and depression. Anxiety and depression are highly comorbid, with roughly 45% of individuals with lifetime depression diagnosis also diagnosed with at least one anxiety disorder \citep{kessler2015}. This fact has long been recognized in the clinical literature, and prominent theories of depression have suggested that anxious control is a necessary precursor to at least some types of depression \citep{alloy1990}. Recent large-scale epidemiological studies have provided  some empirical support for this claim, finding that anxiety symptoms precede and predict the onset of depression \citep{mathew2011, jacobson2014, kessler2015} (though also see \cite{jacobson2017, plana2019}).
-
-An emerging idea in this literature is that pathological avoidance as a result of anxiety mediates the transition to depression, perhaps by reduce the likelihood of experiencing positive events and activities \citep{moitra2008, jacobson2014}. This finding is perfectly in line with the model presented so far. A sketch of how this is possible is shown in Figure 6. Under unperturbed learning, avoidable threat does not impede behavior. Under pessimistic learning, threat can block future reward. This avoidance can manifest as a failure of behavioral initiation, or a lack of overall mobility (here represented by an agent self-transitioning at the starting state). Thus, the model can accommodate the deficits in positive affect observed in depression as a function of behavioral avoidance, as predicted by these epidemiological studies.
+Where the two disorders can be distinguished is in relation to rewards and anhedonia; depressive disorders, but not anxiety disorders, are associated with disrupted reward processing. One interesting proposal in the literature is that at least certain types of anhedonic depression are preceded by anxiety \citep{alloy1990, moitra2008, jacobson2014}. Specifically, persistent avoidance has the long-run effect of reducing the likelihood of anxious individuals encountering positive events and activities in their everyday lives. As a consequence, anxious individuals come to expect an absence of reward in their environments and subsequently develop diminished reward motivation and behavioral activation. Recent large-scale epidemiological studies have provided  some empirical support for this claim, finding that anxiety symptoms and behavioral avoidance precede and predict the longitudinal onset of depression (\cite{mathew2011, jacobson2014, kessler2015}; though also see \cite{jacobson2017, plana2019}).
 
 \begin{figure}
   \centerline{%
     \resizebox{1.0\textwidth}{!}{\includegraphics[trim={0 0 0 0},clip]{../figures/06_lh.png}}%
   }
-  \caption{\textbf{Free Choice Premium}}
-  \par remember to add parameters
+  \par \textbf{Figure 4:} Progression from anxiety to depression. In this open environment, an agent starts opposite a reward (blue) with harm separating them (A). For an optimistic agent ($w=1$), positive value spreads from the reward to the starting tile (Panels B-D, left-to-right). Harm is mitigated through the belief of future self-efficacy. For a pessimistic agent ($w=0.6$), both positive and negative value spread (Panels E-G, left-to-right). Given the agent's closer proximity to harm than reward, the optimal policy for this agent is to stay at the initial state. (Parameters: $\gamma = 0.95$)
+\end{figure}
+
+This prediction is easily accommodated by the present model. Simulations of how this might come back is presented in Figure 4. In this environment, there is only one rewarding and harmful state. Just as in the open field environment, the world is deterministic and the harmful state poses no true threat to an agent. An optimistic agent ($w=1$), with a belief in its ability to maintain an optimistic policy, is unfazed by the presence of the harmful state and develops over time an overall positive representation of the value of the environment (Figure 4b-d).
+
+In contrast, a pessimistic agent ($w=0.6$) cannot be certain of its ability to steer clear of future harm. As such, negative value spreads from the harmful state to its antecedent states (Figure 4e-g). Because in this environment risk and reward are correlated (i.e. the agent must approach the harmful state in order to reach the reward given its starting position), the consequence of negatively spreading value is that the optimal policy is to stay in the initial position. Thus, the pessimistic agent adopts a behavioral policy akin to depressive immobility. Moreover, reward is inaccessible to this agent such that its positive expectations of the environment are also diminished. In summary, a loss of confidence in future reliability can result in behavioral policies that resemble depressive-like states in environments with correlated risk and reward.
+
+\subsection{Planning}
+
+In this next section, we review the literature on aversive pruning. In large, multi-step sequential decision environments, the space of all possible sequences of choices grows exponentially larger with increasing sequence length. As such, it is infeasible for decision making agents to exhaustively explore all possible sequences select that which maximizes reward from the entire set. Heuristics for narrowing the search space then are not only plausible but beneficial for a decision making agent.
+
+One such heuristic that has been proposed in the literature is aversive pruning \citep{Huys2012}. Aversive pruning is defined as a Pavlovian response to encountering a large loss in planning such that sequences involving large losses are discarded from further evaluation. An example of such a scenario is presented in Figure 5. The prediction in this decision tree environment is that an agent would discard the branch of the decision tree involving an immediate large negative loss, even though this branch objectively contains the reward maximizing (loss minimizing) sequence of choices.
+
+\cite{Huys2012} (and later \cite{Lally2017}) tested this prediction in this particular choice environment. Participants received extensive training in this decision tree environment (first without outcomes and then later with rewards) in order to facilitate planning. In free-planning trials, many participants exhibited this Pavlovian bias, rejecting choice sequences which involved the large loss even when the sequence was objectively reward maximizing (loss minimizing). Importantly \cite{Huys2012} and \cite{Lally2017} found the degree of aversive pruning was correlated with depressive and anxiety symptoms, respectively.
+
+\begin{figure}
+  \centerline{%
+    \resizebox{1.0\textwidth}{!}{\includegraphics[trim={0 0 0 0},clip]{../figures/04_tree.png}}%
+  }
+  \par \textbf{Figure 5:} The decision tree environment from \cite{Huys2012} and \cite{Lally2017} (A).
+\end{figure}
+
+The aversive pruning principle makes tremendous sense and draws on a robust literature of heuristics and computational shortcuts for circumventing computationally intractable cognitive processes. It is important to note, however, that a control interpretation also makes similar predictions. Figure 5b-d shows the preferred routes of simulated agents in the same environments under increasingly pessimistic expectations of future actions. As can be observed, pessimistic agents are similarly likely to avoid the branch with the large loss, though for different reasons. Under the pessimistic case, the agent is increasingly less confident that the large gains later in sequence will be realized; as such, the agent is less confident that the initial large loss will be offset. Consequently, pessimistic agents would prefer the branch with smaller losses (even if this is objectively suboptimal). This prediction is similarly consistent with the finding that avoidance of the initial large loss is correlated with anxiety \cite{Lally2017}.
+
+%% An interpretation like this would be consistent with reduced beliefs in one's own competency in such an environment. This is not strictly surprising. Planning multi-choice sequences even in relatively simple environments like those used in these experiments still ostensibly require working memory ability to keep in mind the possible consequences along each branch. Insofar that working memory ability is disrupted in anxiety disorders \citep{Moran2016}, a pessimistic belief may be justified and possibly optimal.
+
+It is worth noting that these two alternate accounts can be disentangled through slight manipulations of the choice environment presented above. Aversive pruning and loss of confidence make similar predictions when a large loss begins a sequence, but not necessarily when a large potential loss comes later in a sequence. In the loss of confidence view, the potential for large loss late in a sequence negatively impacts the estimated value of actions early in the sequence; this is not true for aversive pruning. Identifying such choice sequences in the decision tree task may help identify whether this sort of inference is present in individuals with anxiety performing the task.
+
+\subsection{Free Choice Premium}
+
+In this final section, we propose based on the present theory that anxiety should be inversely related to the free choice bias. If an agent is confident in their future decision making abilities, then it follows that situations in which an individual is able to make a future choice should be preferable to situations in which an individual is not. At worst, an agent is no better off than if they had not made a choice; at best, an agent is better able to steer themselves toward desirable outcomes. Such is the logic that underlies an emerging literature suggesting that choice is inherently valuable \citep{Leotti2010}.
+
+This free choice premium has been observed across several behavioral experiments \citep{Suzuki1997, Leotti2011, Leotti2014, Cockburn2014} using a variety of decision paradigms. For the present purposes, we will describe the experiments presented in \citep{Leotti2011, Leotti2014}. In these experiments, participants complete a two-stage decision making task (Figure 6). In the first stage, participants are make a choice between two cues: one leading to free choice and the other leading to a fixed choice. In the second stage, participants are able to choose between a second set of cues (free choice) or are forced to choose a cue (fixed choice). Unbeknownst to participants, all cues yield reward following the same outcome distribution; thus, no cue is advantageous in the long-run. The free choice premium is measured as a preference for the cue leading to free choice. \cite{Leotti2011, Leotti2014} find participants still prefer the free choice cue, despite this conferring no objective benefit to participants.
+
+Insofar that the free choice premimum is contingent on an agent's belief in its future ability, it stands to reason that this free choice premium should be absent in individuals with anxiety and a loss of confidence. Simulations of this effect are presented in Figure 6. Simulated agents complete an experiment similar to that used in \cite{Leotti2011, Leotti2014}. In contrast to optimistic agents, the value of the worst action in the free choice arm back-propagated to the free-choice cue in pessimistic agents. With increasing pessimism then, the free choice option is less preferable than the fixed choice arm. As a result, pessimistic learners, on average, do not exhibit a bias towards the free choice arm. To our knowledge this prediction has not been empirically tested.
+
+\begin{figure}
+  \centerline{%
+    \resizebox{1.0\textwidth}{!}{\includegraphics[trim={0 0 0 0},clip]{../figures/05_choice.png}}%
+  }
+  \par \textbf{Figure 6:} Schematic of the free choice bias tasks used in \cite{Leotti2011, Leotti2014} (A). The free choice bias is diminished in increasingly pessimistic agents (B).
 \end{figure}
 
 \section{Discussion}
