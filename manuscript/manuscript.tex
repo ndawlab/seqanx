@@ -52,73 +52,25 @@ From the perspective of decision theory, present choice (e.g. to approach or avo
 
 Here, we explore these issues by offering a decision theoretic account of sequential choice under pessimistic future expectations. We consider optimal behavior in deterministic, finite Markov decision processes (MDP), in which agents learn reward-maximizing (or loss-minimizing) policies in grid-world environments requiring series of choices. Specifically, our model treats pessimistic expectations as the aberrant assumption that an agent will be unable to act consistently with its preferences in the future. In other words, our model assumes that agents are reward-maximizing manner in present choice but expect that such choices will be unavailable to them in the future. We show that this minor deviation from standard temporal difference learning models captures many features of anxious behavior, including exaggerated threat appraisal, fear generalization, and persistent avoidance.
 
-In the remaining sections, we also demonstrate that this simple model can account for the findings reported in the handful of empirical studies measuring anxious choice in sequential choice environments. We then offer a speculative prediction from the model that, consistent with negative future expectations, anxious individuals should not exhibit the free choice preference observed in non-anxious individuals. Finally, we discuss the relationship of the present model to clinical theories postulating a role for control and helplessness in anxiety disorders. 
+In the remaining sections, we also demonstrate that this simple model can account for the findings reported in the handful of empirical studies measuring anxious choice in sequential choice environments. We then offer a speculative prediction from the model that, consistent with negative future expectations, anxious individuals should not exhibit the free choice preference observed in non-anxious individuals. Finally, we discuss the relationship of the present model to clinical theories postulating a role for control and helplessness in anxiety disorders.
 
-\section{Methods}
+\section{The model}
 
-\subsection{Markov Decision Processes}
+We first briefly review the formalism of Markov decision processes, which will provide the framework for our results. For complete treatments, see \cite{SuttonBarto1998, SuttonBarto2018} and \cite{bertsekas2005}.
 
-Before moving forward, we first briefly review the formalism of Markov decision processes, which provide the framework for our results. For complete treatments, see \cite{SuttonBarto1998, SuttonBarto2018} and \cite{bertsekas2005}.
+A MDP is defined by a set of states, $S$, a set of actions, $A$, a reward function defined over state-action pairs, $R(s,a)$, and a state transition distribution, $P(s'|s,a)$. In a MDP, states and rewards are experienced sequentially according to chosen actions and the one-step transition structure. The goal for an agent in a MDP is to learn a policy, or mapping of actions to states, that maximizes expected cumulative (discounted) reward. The value of a state can be defined recursively as the sum of the immediate reward received following an action, $R(s, a)$, and the value of its successor state $s’$, averaged over potential future transitions and actions according to the current policy $\pi$. Under Bellman optimality, the value of a state under the optimal policy is equal to the expected return for the best action from that state.
 
-A MDP is defined by a set of states, $S$, a set of actions, $A$, a reward function defined over state/action pairs, $R(s,a)$, and a state transition distribution, $P(s'|s,a)$, where $a$ denotes a chosen action. In a MDP, states and rewards occur sequentially according to the one-step transition structure where transitions follow actions. The goal for an agent in a MDP is to learn to choose a policy, $\pi$, or mapping of state to action, that maximizes long-run expected reward. Here we define the value of a state under a policy, $V^\pi(s)$, as the expected cumulative discounted reward:
+$$ V^*(s) = \max_a \sum_{s',r} p(s',r|s,a) \left[ r + \gamma v(s') \right] $$
 
-$$ V^\pi(s) = \mathbb{E} \left[ \sum^{\infty}_{k=0} \gamma^k R_{t+k} | S_t = s \right] $$
+where $\gamma$ is the temporal discounting parameter, which controls the influence of distant future rewards.
 
-where $\gamma$ is the temporal discounting parameter, controlling the weighting of distant future rewards. The value function can be defined recursively as the sum of the immediate reward following an action chosen in a state, $R(s, a)$, and the value of its successor state $s’$, averaged over potential future actions, $a$, and transitions according to the current policy $\pi$:
+Crucially then, the value of a state under the optimal policy is contingent on an agent's particular expectations about the future. First, it is a function of the state transition distribution, or beliefs about the likelihood of encountering particular states conditioned on undertaking some action. Second, it is also a function of the actions available in those successor states, as those in turn define the value of these states. Under Bellman optimality, it is normative for an agent to assume that the value of a successor state is equivalent to the best action from that state. This can be expressed as:
 
-$$ V^\pi(s) = \sum_a \pi(a|s) \sum_{s',r}p(s',r|s,a) \left[ r + \gamma v(s') \right] $$
+$$ V^*(s) = \max_a \sum_{s',r}p(s',r|s,a) \left[ r + \gamma \max_{a'} q_*(s',a') \right] $$
 
-Under the optimal policy, the value function is given by:
+where $q(s',a')$ denotes the a state-action value. As we will demonstrate, this assumption has profound consequences for learning about approach and avoidance behaviors.
 
-$$ V^*(s) = \max_a \mathbb{E} \left[ \sum^{\infty}_{k=0} \gamma^k R_{t+k} | S_t = s \right] $$
-
-$$ = \max_a \sum_{s',r}p(s',r|s,a) \left[ r + \gamma v_*(s') \right] $$
-
-Using the formalisms above, the value of one particular action in a state under the optimal policy is defined as:
-
-$$ Q^\pi(s,a) = \mathbb{E} \left[ \sum^{\infty}_{k=0} \gamma^k R_{t+k} | S_t = s \right] $$
-
-$$ = \sum_{s',r}p(s',r|s,a) \left[ r + \gamma v_*(s') \right] $$
-
-Insofar that the value of a state under the optimal policy is defined as the best action under that state, we can re-express the above equivalently as:
-
-$$ q_*(s,a) = \sum_{s',r}p(s',r|s,a) \left[ r + \gamma \max_{a'} q_*(s',a') \right] $$
-
-Thus in a conventional MDP, the value of states in the environment under the optimal policy assumes the agent is able to act according to the optimal policy in the future.
-
-\subsection{Pessimistic Learning}
-
-In the previous section, we observed that the value of a state and its associated state-action pairs are a function of the environment transition distribution and the best future action. In standard MDP problems, it is typically assumed that the transition distribution is known and accurate, and that the agent is consistently able to operate under the optimal policy in the future. In this section, we introduce a formalism deviating from these standard assumptions.
-
-Central to many theories of clinical anxiety is a perceived loss of control (see discussion for elaboration). In the MDP framework described above, this may come in one of several forms. First, an agent may perceive the transition structure of the environment to be less reliable than it actually is. Put another way, an agent may have a biased expectation that, despite choosing an action $a$ with the intent of transition to state $s'$, the agent may instead transition to an alternate, undesired state $s^$. In the case of clinical anxiety, the expectation may be more dire, that the environment is "adversarial" is likely to transition an agent, not randomly, but to the worse states.
-
-Second, an agent may doubt its own agentive control. An agent may expect to be able to choose the best possible action for itself in the present, but may not be confident it will still be able to decide optimally for itself in the future. In either event, following the value computations defined above, we should expect the value estimates for such an agent to diminish. If an agent believes itself or the environment to be unreliable, then the agent cannot be optimistic about its future and should instead adopt a different policy.
-
-These sorts of problems have been explored in the safe reinforcement learning and robust control literature \citep{Garcia2015}. There, we are concerned with programming agents that identify the optimal policy under pessimistic assumptions. A number of approaches have been proposed in that literature. Here, we focus on one particular simple implemented proposed by \cite{Gaskett2003}:
-
-$$ V(s') = w \max_{a'} q(s',a') + (1 - w) \min_{a'} q(s',a') $$
-
-such that the state value under the optimal policy is defined as:
-
-$$ V(s) = \max_a \sum_{s',r}p(s',r|s,a) \left[ r + \gamma \left( w \max_{a'} q(s',a') + (1 - w) \min_{a'} q(s',a') \right) \right] $$
-
-In this formalism, $w$ controls the degree of pessimism. When $\w = 1$, an agent is maximally optimistic and fully expects to act according to the best possible actions in the future. When $w = 0$, the agent is maximally pessimistic and fully expects to act according to the worst possible actions in the future. When $w = 0.5$, the weighs the best and worst possible future actions equally.
-
-We note that we are not committed to this particular implementation of a pessimistic agent. As mentioned above, an alternative parameterization would have been to program an agent with a belief in an adversarial environment, preferentially transitioning it to worse states. Insofar that these two terms are multiplicative in value calculations, either implementation should yield similar results. Similarly, the w-pessimism function could easily be replaced with other functions (e.g. softmax with negative inverse temperature). This formalism is simply convenient and is useful for demonstrating the points we demonstrate below. It is not a substantive claim about anxiety.
-
-\subsection{Simulations}
-
-In the following sections, we present the results of simulations of pessimistic learning in a variety of MDP environments. In all simulations, the state-action values under the optimal policy, $Q_*(s,a)$, were solved for directly through Q-value iteration \citep{SuttonBarto1998, SuttonBarto1998, bertsekas2005}. The details of this algorithm are presented in the appendix. Model parameters are reported for each environment in their corresponding sections. All simulations were carried out with the python programming language and are publicly available on Github (https://github.com/szorowi1/SecretFunTimes).
-
-\section{Results}
-
-\subsection{Pessimistic Inference}
-
-In this first section, we demonstrate how learning under an assumption of a lack of future control naturally leads to pessimistic inference and second-order conditioning. A symptom central to all of the anxiety disorders is pessimistic inference, or a tendency to appraise the likelihood and/or severity of threatening situations out of proportion to their actual environmental contingencies \citep{dsm5, BeckClark1997, ClarkBeck2011}. For example, an individual with specific phobia may vastly exaggerate the probability of encountering their fear (e.g. a venomous spider) in their everyday lives. Anxious individuals will also tend to associate fear with cues tangentially related to signals of threat. For example, the same individual may begin to fear locations where they may encounter spider webs (e.g. basements).
-
-Pessimistic inference in anxiety is well-documented. In studies of self-reported beliefs, individuals with anxiety rate hypothetical future negative outcomes as being more likely to occur and worse to experience than non-anxious counterparts \citep{ButlerMathews1983, ButlerMathews1987, Foa1996, MacLeod1996, MacLeod1997, Luten1997, Stober1997, Borkovec1999, Maner2006, Mitte2007, Miranda2007}. In the laboratory, exaggerated threat appraisal in anxiety has traditionally been measured through fear conditioning. The results of these studies demonstrate that anxious individuals exhibit greater fear towards threatening cues, non-threatening cues, and extinguished threatening cues as compared to non-anxious counterparts \citep{lissek2005, MinekaOehlberg2008, Duits2015}. Importantly, threatening cues can become associated with secondary neutral cues, allowing negative value to spread \citep{wessa2007}. In sum, anxiety is associated with inflated estimates of threat, both likelihood and value, and these estimates can spread from the source to distantly associated cues.
-
-In our first simulation, we demonstrate how this may come about. In the open field environment (Figure 1a), an agent is free to navigate a large grid world devoid of value except for two states: one rewarding and one aversive red. In this environment, the one-step transition structure is deterministic such that the environment fully respects the agent's choice. As such, the agent is under no threat despite the presence of a harmful state. Insofar that the agent never acts under a masochistic policy and intentionally approaches harm, the agent need not ever encounter the harmful state.
+In a MDP, the discovery of a rewarding action by an agent has an effect not only on the associated state but also on its antecedent states. This follows naturally from the recursive definition of state values defined above. So when an agent learns a particular state predicts reward, the states which immediately precede it also acquire value (as do their antecedent states, and so on) thereby propagating positive value across the state space so as to reinforce reward-maximizing policies. This process does not occur, however, upon the discovery of a suboptimal or aversive action. Because under Bellman optimality the value of a state is dependent in part on the best possible future action, the discovery of harmful actions will not necessarily impact state value estimates or the optimal policy. Insofar that suboptimal or aversive actions can be avoided, then Bellman optimality predicts a fundamental asymmetry: reward opportunities propagate recursively to antecedent states, but danger does not.
 
 \begin{figure}
   \centerline{%
@@ -127,7 +79,31 @@ In our first simulation, we demonstrate how this may come about. In the open fie
   \par \textbf{Figure 1:} The open field is a deterministic gridworld with only one rewarding (blue) and aversive (red) state (A). For an optimistic agent ($w=1$), all states (other than the harmful state) take on positive value (B). For a pessimistic agent ($w=0.5$), negative value spreads from the source to antecedent states (C). With increasing pessimism ($w=0$), the extent of the spread grows worse (D). (Parameters: $\gamma = 0.95$)
 \end{figure}
 
-The long-run value estimates learned by an optimistic agent (i.e. an agent expecting to be able to follow a reward-maximizing policy now and in the future) reflect this (Figure 1b). For an optimistic agent, all states in the open field environment, sans the harmful state itself, take on a positive value. This is unsurprising insofar that, except for the harmful state, the agent will always encounter a reward in the long-run no matter its starting position in the field.
+This principle is highlighted in Figure 1. In an open field environment, an agent is free to navigate a discrete, deterministic grid-world devoid of rewards except for two states: one rewarding (blue) and one harmful (red, Figure 1a). In this environment, the one-step transition distribution respects the agent's choice; that is, the agent comes into experiences an aversive outcome only if it decides to approach danger. As can be observed, the state value estimates learned by an agent under Bellman optimality (Figure 1b) reflect the asymmetry described above. Despite the presence of danger, the agent learns to associate all states (except the harmful state itself) with positive value as the reward opportunity propagates outwards to all antecedent states. Insofar that danger can be successfully avoided, all states (even those adjacent to the danger) come to predict expected future reward.
+
+What happens, however, when an agent believes that danger is not perfectly avoidable and safety not guaranteed? Such a belief may manifest as inaccurate assumptions about the state transition distribution. For example, an agent may wrongly believe it possible that it could transition to a state proximal to danger in spite of its choices. Alternately, this belief may manifest as pessimistic expectations about the availability of future actions. An agent may believe it has the capacity to act in accordance with the (reward-maximizing) optimal policy in the present, but may be unable to do so in the future. Importantly, such beliefs about the unreliability of the environment or of the self are commonly endorsed in anxiety disorders.
+
+We can explicitly model this type of pessimism about future expectations through a minor change to the state value function defined above. Here, we focus on one particular formulation, previously introduced by \cite{Gaskett2003}, that captures the expectation that future action may deviate from the optimal reward-maximizing policy. We define the value of the successor state as:
+
+$$ V(s') = w \max_{a'} q(s',a') + (1 - w) \min_{a'} q(s',a') $$
+
+such that the state value under the optimal policy is defined as:
+
+$$ V(s) = \max_a \sum_{s',r}p(s',r|s,a) \left[ r + \gamma \left( w \max_{a'} q(s',a') + (1 - w) \min_{a'} q(s',a') \right) \right] $$
+
+where the parameter $w$ controls the degree of pessimism. When $\w = 1$, an agent is maximally optimistic and fully expects to act according to the best possible actions in the future. When $w = 0$, the agent is maximally pessimistic and fully expects to act according to the worst possible actions in the future. When $w = 0.5$, the weighs the best and worst possible future actions equally. We note we are not committed to this particular implementation as anything more than a computational convenience. Many alternate functions could be defined over the space of possible future actions. (As mentioned above, we could also modify the transition distribution.) This formalism highlights an important computational principle; it does not constitute a mechanistic claim about anxiety disorders.
+
+\section{Simulations}
+
+In the following sections, we present the results of simulations of pessimistic learning in a variety of MDP environments. In all simulations, the state-action values under the optimal policy, $Q_*(s,a)$, were solved for directly through Q-value iteration \citep{SuttonBarto1998, SuttonBarto1998, bertsekas2005}. The details of this algorithm are presented in the appendix. Model parameters are reported for each environment in their corresponding sections. All simulations were carried out with the python programming language and are publicly available on Github (https://github.com/szorowi1/SecretFunTimes).
+
+\subsection{Pessimistic Inference}
+
+In this first section, we demonstrate how learning under an assumption of a lack of future control naturally leads to pessimistic inference and second-order conditioning. A symptom central to all of the anxiety disorders is pessimistic inference, or a tendency to appraise the likelihood and/or severity of threatening situations out of proportion to their actual environmental contingencies \citep{dsm5, BeckClark1997, ClarkBeck2011}. For example, an individual with specific phobia may vastly exaggerate the probability of encountering their fear (e.g. a venomous spider) in their everyday lives. Anxious individuals will also tend to associate fear with cues tangentially related to signals of threat. For example, the same individual may begin to fear locations where they may encounter spider webs (e.g. basements).
+
+Pessimistic inference in anxiety is well-documented. In studies of self-reported beliefs, individuals with anxiety rate hypothetical future negative outcomes as being more likely to occur and worse to experience than non-anxious counterparts \citep{ButlerMathews1983, ButlerMathews1987, Foa1996, MacLeod1996, MacLeod1997, Luten1997, Stober1997, Borkovec1999, Maner2006, Mitte2007, Miranda2007}. In the laboratory, exaggerated threat appraisal in anxiety has traditionally been measured through fear conditioning. The results of these studies demonstrate that anxious individuals exhibit greater fear towards threatening cues, non-threatening cues, and extinguished threatening cues as compared to non-anxious counterparts \citep{lissek2005, MinekaOehlberg2008, Duits2015}. Importantly, threatening cues can become associated with secondary neutral cues, allowing negative value to spread \citep{wessa2007}. In sum, anxiety is associated with inflated estimates of threat, both likelihood and value, and these estimates can spread from the source to distantly associated cues.
+
+
 
 The same cannot be said for a pessimistic agent. If an agent doubts its future ability to act in according with the optimal policy, then it cannot rule out that, in the future, it may inadvertently encounter the harmful state. This is more so likely if the agent is already proximal to the harmful state. Under this pessimistic belief, the possibility of future harm is no longer zero, as it is for the optimistic agent, and thus negative value can propagate from the states antecedent to harm, back to their respective antecedents and so on. The extent of this spread will depend on the strength of the pessimistic belief (Figures 1c, 1d). With increasing pessimism, harmful outcomes are assigned greater credence and thus exert greater and wider influence on antecedent states.
 
