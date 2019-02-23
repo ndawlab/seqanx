@@ -11,16 +11,16 @@ class OpenField(GraphWorld):
         self.shape = self.grid.shape
 
         ## Define start/terminal states.
-        start = 5
-        terminal = np.array([57,63])
+        start = 115
+        terminal = np.array([13,19])
 
         ## Define one-step transition matrix.
         T = grid_to_adj(self.grid, terminal)
 
         ## Define rewards.
         R = 0 * np.ones_like(T)               # Majority transitions
-        R[:,57] =  10                         # Reward transition
-        R[:,63] = -10                         # Punishment transition
+        R[:,13] =  10                         # Reward transition
+        R[:,19] = -10                         # Punishment transition
         R[terminal,terminal] = 0              # Terminal transitions
         R *= T
 
@@ -71,7 +71,7 @@ class OpenField(GraphWorld):
 
         ## Define grid.
         grid = np.zeros((11, 11))    # Viable states
-        grid[5,[2,-3]] = [1, 2]      # Reward/shock states
+        grid[1,[2,-3]] = [1, 2]      # Reward/shock states
 
         ## Define colormap.
         cmap = ListedColormap([grid_color, reward_color, shock_color])
@@ -87,7 +87,49 @@ class OpenField(GraphWorld):
         ## Annotate.
         if annot:
             if annot_kws is None: annot_kws = dict()
-            ax.text(2.5,5.5,reward,ha='center',va='center',**annot_kws)
-            ax.text(8.45,5.5,shock,ha='center',va='center',**annot_kws)
+            ax.text(2.5,1.5,reward,ha='center',va='center',**annot_kws)
+            ax.text(8.45,1.5,shock,ha='center',va='center',**annot_kws)
         
+        return ax
+    
+    def plot_policy(self, ax, pi, color='w', head_width=0.25, head_length=0.25):
+        """Plot agent policy on grid world.
+
+        Parameters
+        ----------
+        ax : matplotlib Axes
+            Axes in which to draw the plot.
+        pi : array
+            Agent policy, i.e. ordered visitation of states.
+        color : str, list
+            Color(s) of arrow.
+        head_width : float (default=0.25)
+            Width of the arrow head.
+        head_length : float (default=0.25)
+            Length of the arrow head.
+
+        Returns
+        -------
+        ax : matplotlib Axes
+            Axes in which to draw the plot.
+        """
+
+        ## Error-catching.
+        if isinstance(color, str):
+            color = [color] * len(pi)
+            
+        ## Iteratively plot arrows.
+        for i in range(len(pi)-1):
+
+            ## Identify S, S' coordinates.
+            y1, x1 = np.where(self.grid==pi[i])
+            y2, x2 = np.where(self.grid==pi[i+1])
+
+            ## Define arrow coordinates.
+            x, y = int(x1) + 0.5, int(y1) + 0.5
+            dx, dy = 0.5*int(x2-x1), 0.5*int(y2-y1)
+            
+            ## Plot.
+            ax.arrow(x, y, dx, dy, color=color[i], head_width=head_width, head_length=head_length)
+            
         return ax
