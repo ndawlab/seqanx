@@ -35,7 +35,7 @@ class FreeChoice(GraphWorld):
        over monetary gains and losses. Psychological science, 25(2), 596-604.
     """
     
-    def __init__(self, rewards=[-1,0,1], probs=None):
+    def __init__(self, rewards=[-1,1], probs=None):
     
         ## Error-catching.
         if probs is None: probs = np.ones_like(rewards) / len(rewards)

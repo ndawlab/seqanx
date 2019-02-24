@@ -2,15 +2,15 @@ import numpy as np
 from scipy.stats import norm
 from ._base import GraphWorld
 
-class FlightInitiationDistance(GraphWorld):
-    """Flight initiation distance environment. 
+class BART(GraphWorld):
+    """Balloon analog risk task environment.
     
     Parameters
     ----------
-    runway : int
-        Number of states in 2-D runway.
+    pumps : int
+        Maximum number of balloon pumps.
     mu : float
-        Average state at which predator strikes.
+        Average state at which balloon pops.
     sd : float
         Deviation around mean.
     
@@ -31,16 +31,18 @@ class FlightInitiationDistance(GraphWorld):
                 
     References
     ----------
-    1. Qi, S., Hassabis, D., Sun, J., Guo, F., Daw, N., & Mobbs, D. (2018). 
+    1. Lejuez, C. W., Read, J. P., Kahler, C. W., Richards, J. B., Ramsey, S. E., Stuart, 
+       G. L., ... & Brown, R. A. (2002). Evaluation of a behavioral measure of risk taking: 
+       the Balloon Analogue Risk Task (BART). Journal of Experimental Psychology: Applied, 8(2), 75.
+    2. Qi, S., Hassabis, D., Sun, J., Guo, F., Daw, N., & Mobbs, D. (2018). 
        How cognitive and reactive fear circuits optimize escape decisions in humans. 
        Proceedings of the National Academy of Sciences, 115(12), 3186-3191. 
     """
     
-    def __init__(self, runway=10, mu=5, sd=1, shock=-1):
-    
+    def __init__(self, pumps=10, mu=5, sd=1):
         
         ## Define one-step transition matrix.
-        n = runway
+        n = pumps
         T = np.zeros((n+2,n+2)) * np.nan
         T[np.arange(n),np.arange(n)+1] = 1   # Corridor transitions
         T[:n,n] = 1                          # Safety transition
@@ -51,7 +53,7 @@ class FlightInitiationDistance(GraphWorld):
         R = np.copy(T)
         R[np.arange(n),np.arange(n)+1] = 0   # Corridor transitions
         R[:n,n] = np.arange(n) + 1           # Safety transition
-        R[:n,n+1] = shock                    # Danger transition
+        R[:n,n+1] = -np.arange(n)            # Danger transition
         R[[n,n+1],[n,n+1]] = 0               # Terminal states 
         
         ## Define start/terminal states.
@@ -65,11 +67,12 @@ class FlightInitiationDistance(GraphWorld):
         GraphWorld.__init__(self, T, R, start, terminal, 0)
             
         ## Remove masochistic Q-values (i.e. agent cannot elect to be eaten).
-        sane_ix = [False if arr[0]==shock else True for arr in self.info['R']]
+        bps = self.n_states - 1
+        sane_ix = [np.logical_or(arr[0]!=bps, arr.size==1) for arr in self.info["S'"].values]
         self.info = self.info[sane_ix].reset_index(drop=True)
             
         ## Update probability of being eaten.
-        states = np.arange(runway)
+        states = np.arange(pumps)
         cdf = norm(mu, sd).cdf(states)
         
         for i, row in self.info.iterrows():
@@ -79,4 +82,4 @@ class FlightInitiationDistance(GraphWorld):
                 self.info.at[i,'T'] = np.array([1-cdf[s], 0, cdf[s]])
                 
     def __repr__(self):
-        return '<GraphWorld | Flight Initiation Distance>'
+        return '<GraphWorld | Balloon Analog Risk Task>'
