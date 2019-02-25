@@ -2,22 +2,52 @@ import numpy as np
 from ._base import GraphWorld, grid_to_adj
 
 class Helplessness(GraphWorld):
+    """Learned helplessness environment.
     
-    def __init__(self, outcomes=[10,-10], epsilon=0):
+    Parameters
+    ----------
+    reward : float
+        Value of reward.
+    shock : float
+        Value of punishment.
+    epsilon : float
+        Randomness of state transitions (deterministic if 0).
+    
+    Attributes
+    ----------
+    states : array, shape = (n,)
+        Indices of states.
+    n_states : int
+        Total number of states.
+    viable_states : array
+        Indices of viable states.
+    n_viable_states : int
+        Number of viable states.
+    info : DataFrame
+        Pandas DataFrame  storing the dynamics of the Markov decision process.
+        Rows correspond to each viable Q-value, whereas each column contains
+        its associated information.
+    """
+    
+    def __init__(self, reward=10, shock=-10, epsilon=0):
         
         ## Define gridworld.
-        self.grid = np.arange(5*15).reshape(5,15)
+        grid = np.zeros((5,16),dtype=float)
+        grid[[0, 1, 3, 4], [-1, -1, -1, -1]] = np.nan
+        grid[np.where(~np.isnan(grid))] = np.arange(np.invert(np.isnan(grid)).sum())
+        self.grid = grid
         self.shape = self.grid.shape
         
         ## Define start/terminal states.
         start = 44
-        terminal = np.array([30, 37])
+        terminal = np.array([30, 37, 45])
 
         ## Define one-step transition matrix.
         T = grid_to_adj(self.grid, terminal)
         self.T = T
         
         ## Define rewards.
+        outcomes = [reward, shock, 0]
         R = np.zeros_like(T) 
         for s, r in zip(terminal, outcomes): R[:,s] = r
         R[terminal,terminal] = 0
@@ -26,14 +56,6 @@ class Helplessness(GraphWorld):
         ## Initialize GraphWorld.
         GraphWorld.__init__(self, T, R, start, terminal, epsilon)
         self.R = R
-        
-        ## Update start.
-        self.terminal = np.append(self.terminal, start)
-        self.info = self.info.loc[self.info.S != 44]
-        for i in range(4):
-            d = {"S":44, "S'":np.roll([29, 43, 44, 59],i), "T":np.array([1,0,0,0]), "R":np.zeros(4)}
-            self.info = self.info.append(d, ignore_index=True)
-        self.info = self.info.sort_values('S').reset_index(drop=True)
         
     def __repr__(self):
         return '<GraphWorld | Learned Helplessness>'
@@ -78,8 +100,8 @@ class Helplessness(GraphWorld):
         if ax is None: fig, ax = plt.subplots(1,1,figsize=(5,5))
 
         ## Define grid.
-        grid = np.zeros_like(self.grid)    # Viable states
-        grid[[2,2],[0,7]] = [1, 2]         # Reward/shock states
+        grid = np.zeros((5, 15))      # Viable states
+        grid[[2,2],[0,7]] = [1, 2]    # Reward/shock states
 
         ## Define colormap.
         cmap = ListedColormap([grid_color, reward_color, shock_color])
@@ -112,8 +134,8 @@ class Helplessness(GraphWorld):
             Axes in which to draw the plot.
         pi : array
             Agent policy, i.e. ordered visitation of states.
-        color : str (default = white)
-            Color of arrow.
+        color : str, list
+            Color(s) of arrow.
         head_width : float (default=0.25)
             Width of the arrow head.
         head_length : float (default=0.25)
@@ -125,6 +147,10 @@ class Helplessness(GraphWorld):
             Axes in which to draw the plot.
         """
 
+        ## Error-catching.
+        if isinstance(color, str):
+            color = [color] * len(pi)
+            
         ## Iteratively plot arrows.
         for i in range(len(pi)-1):
 
@@ -132,8 +158,15 @@ class Helplessness(GraphWorld):
             y1, x1 = np.where(self.grid==pi[i])
             y2, x2 = np.where(self.grid==pi[i+1])
 
+            ## Define arrow coordinates.
+            x, y = int(x1) + 0.5, int(y1) + 0.5
+            dx, dy = 0.5*int(x2-x1), 0.5*int(y2-y1)
+            
+            ## Specialty code: trims arrow lengths for up/down arrows.
+            if dy > 0: y += 0.25; dy -= 0.25; head_width *= 1.25; head_length *= 0.85
+            elif dy < 0: y -= 0.25; dy += 0.25; head_width *= 1.25; head_length *= 0.85
+            
             ## Plot.
-            ax.arrow(int(x1)+0.5, int(y1)+0.5, 0.5*int(x2-x1), 0.5*int(y2-y1), 
-                     color=color, head_width=head_width, head_length=head_length)
-
+            ax.arrow(x, y, dx, dy, color=color[i], head_width=head_width, head_length=head_length)
+            
         return ax
