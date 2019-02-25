@@ -14,12 +14,12 @@ To install the code used to generate the results in the manuscript, open a termi
 
 .. code-block:: bash
 
-    pip install git+https://github.com/szorowi1/SecretFunTimes.git
+    pip install git+https://github.com/ndawlab/seqanx.git
 
 Alternately, you can clone the repository and install locally:
 
 .. code-block:: bash
 
-    git clone https://github.com/szorowi1/SecretFunTimes
-    cd SecretFunTimes
+    git clone https://github.com/ndawlab/seqanx
+    cd seqanx
     pip install -e .

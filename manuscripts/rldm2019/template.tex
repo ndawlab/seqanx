@@ -1,0 +1,133 @@
+\documentclass[11pt]{article} % For LaTeX2e
+\usepackage{rldmsubmit,palatino}
+\usepackage{graphicx}
+
+\title{Formatting Instructions for RLDM}
+
+
+\author{
+Dorsal S.~Raphe\thanks{ Use footnote for providing further information
+about author (webpage, alternative address)---\emph{not} for acknowledging
+funding agencies.} \\
+Department of Computer Science\\
+Cranberry-Lemon University\\
+Pittsburgh, PA 15213 \\
+\texttt{raphe@cs.cranberry-lemon.edu} \\
+\And
+Coauthor \\
+Affiliation \\
+Address \\
+\texttt{email} \\
+\AND
+Coauthor \\
+Affiliation \\
+Address \\
+\texttt{email} \\
+\And
+Coauthor \\
+Affiliation \\
+Address \\
+\texttt{email} \\
+\And
+Coauthor \\
+Affiliation \\
+Address \\
+\texttt{email} \\
+(if needed)\\
+}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to \LaTeX{} to determine where to break
+% the lines. Using \AND forces a linebreak at that point. So, if \LaTeX{}
+% puts 3 of 4 authors names on the first line, and the last on the second
+% line, try using \AND instead of \And before the third author name.
+
+\newcommand{\fix}{\marginpar{FIX}}
+\newcommand{\new}{\marginpar{NEW}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+The \emph{title} should be a maximum of 100 characters. 
+
+The \emph{abstract} should be a maximum of 2000 characters of text,
+including spaces (no figure is allowed). You will be asked to copy
+this into a text-only box; and it will appear as such in the
+conference booklet. Use 11~point type, with a vertical spacing of
+12~points.  The word \textbf{Abstract} must be centered, bold, and in
+point size 12. Two line spaces precede the abstract.
+\end{abstract}
+
+\keywords{
+enter key words here
+}
+
+\acknowledgements{We are deeply indebted to Google DeepMind and
+the Weinberg Institute for Cognitive Science for
+their generous support of RLDM2017.}  
+
+
+\startmain % to start the main 1-4 pages of the submission.
+
+\section{Submission of papers to RLDM}
+
+RLDM requires electronic submissions.  This year's electronic
+submission site is   
+\begin{center}
+   https://cmt3.research.microsoft.com/RLDM2017/
+\end{center}
+
+Please read the instructions below, and follow them faithfully. Note
+that there is also a template \verb+rldm.rtf+ for Microsoft Word,
+which is available from the website below.
+\subsection{Style}
+
+Papers to be submitted to RLDM must be prepared according to the
+instructions presented here. Papers consist of a \emph{title}, which
+has a maximum of 100 characters, an \emph{abstract}, which is a
+maximum of 2000 characters, up to five key words, and an
+\emph{extended abstract}, which starts on the second page, and can be
+between one and four pages. Figures and references should be included
+in the latter.
+
+Authors preferring \LaTeX{} are requested to use the RLDM \LaTeX{}
+style files obtainable at the RLDM website at
+\begin{center}
+   http://www.rldm.org/
+\end{center}
+The file \verb+rldm.pdf+ contains these instructions and illustrates
+the various formatting requirements your RLDM paper must
+satisfy. There is a \LaTeX{} style file called \verb+rldmsubmit.sty+,
+and a \LaTeX{} file \verb+rldm.tex+, which may be used as a ``shell''
+for writing your paper. All you have to do is replace the author,
+title, abstract, keywords, acknowledgements and text of the paper with
+your own. The file
+\verb+rldm.rtf+ is provided as an equivalent shell for Microsoft Word users. 
+
+\section{General formatting instructions}
+\label{gen_inst}
+
+The paper size for RLDM is ``US Letter'' (rather than ``A4''). Margins
+are 1.5cm around all sides. Use 11~point type with a vertical spacing
+of 12~points. Palatino is the preferred typeface throughout.
+Paragraphs are separated by 1/2~line space, with no indentation.
+
+Paper title is 17~point, initial caps/lower case, bold, centered between
+2~horizontal rules. Top rule is 4~points thick and bottom rule is 1~point
+thick. Allow 0.6cm space above and below title to rules. 
+
+The lead author's name is to be listed first (left-most), and
+the co-authors' names (if different address) are set to follow. If
+there is only one co-author, list both author and co-author side by side.
+
+\section{Preparing PostScript or PDF files}
+
+Please prepare PostScript or PDF files with paper size ``US Letter''.
+The -t letter option on dvips will produce US Letter files.
+
+
+\end{document}
