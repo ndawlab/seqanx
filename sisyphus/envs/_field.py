@@ -2,9 +2,33 @@ import numpy as np
 from ._base import GraphWorld, grid_to_adj
 
 class OpenField(GraphWorld):
-    """Open field task environment."""
+    """Open field task environment.
     
-    def __init__(self, epsilon=0):
+    Parameters
+    ----------
+    reward : float
+        Value of reward.
+    punishment : float
+        Value of punishment.
+    
+    Attributes
+    ----------
+    states : array, shape = (n,)
+        Indices of states.
+    n_states : int
+        Total number of states.
+    viable_states : array
+        Indices of viable states.
+    n_viable_states : int
+        Number of viable states.
+    info : DataFrame
+        Pandas DataFrame storing the dynamics of the Markov decision process.
+        Rows correspond to each viable Q-value, whereas each column contains
+        its associated information.
+    
+    """
+    
+    def __init__(self, reward=10, punishment=-10):
     
         ## Define gridworld.
         self.grid = np.arange(11 * 11, dtype=int).reshape(11,11)
@@ -19,19 +43,19 @@ class OpenField(GraphWorld):
 
         ## Define rewards.
         R = 0 * np.ones_like(T)               # Majority transitions
-        R[:,13] =  10                         # Reward transition
-        R[:,19] = -10                         # Punishment transition
+        R[:,13] = reward                      # Reward transition
+        R[:,19] = punishment                  # Punishment transition
         R[terminal,terminal] = 0              # Terminal transitions
         R *= T
 
         ## Initialize GridWorld.
-        GraphWorld.__init__(self, T, R, start, terminal, epsilon)
+        GraphWorld.__init__(self, T, R, start, terminal, epsilon=0)
         
     def __repr__(self):
         return '<GraphWorld | Open Field Task>'
     
-    def plot_field(self, reward=10, shock=-10, annot=True, grid_color='0.8',  
-                   reward_color='#f3e1db', shock_color='#1c142a', 
+    def plot_field(self, reward=10, punishment=-10, annot=True, grid_color='0.8',  
+                   reward_color='#f3e1db', punishment_color='#1c142a', 
                    cbar=False, annot_kws=None, ax=None):
         """Plot open field environment.
 
@@ -39,15 +63,15 @@ class OpenField(GraphWorld):
         ----------
         reward : float
             Reward value.
-        shock : float
-            Shock value.
+        punishment : float
+            Punishment value.
         annot : bool
             Annotate states.
         grid_color : str
             Color of grid tiles.
         reward_color : str
             Color of rewarding tile.
-        shock_color : str
+        punishment_color : str
             Color of punishing tile.
         cbar : bool
             Whether to draw a colorbar.
@@ -71,10 +95,10 @@ class OpenField(GraphWorld):
 
         ## Define grid.
         grid = np.zeros((11, 11))    # Viable states
-        grid[1,[2,-3]] = [1, 2]      # Reward/shock states
+        grid[1,[2,-3]] = [1, 2]      # Reward/punishment states
 
         ## Define colormap.
-        cmap = ListedColormap([grid_color, reward_color, shock_color])
+        cmap = ListedColormap([grid_color, reward_color, punishment_color])
 
         ## Plot open field.
         ax = sns.heatmap(grid, cmap=cmap, cbar=cbar, ax=ax)
@@ -88,7 +112,7 @@ class OpenField(GraphWorld):
         if annot:
             if annot_kws is None: annot_kws = dict()
             ax.text(2.5,1.5,reward,ha='center',va='center',**annot_kws)
-            ax.text(8.45,1.5,shock,ha='center',va='center',**annot_kws)
+            ax.text(8.45,1.5,punishment,ha='center',va='center',**annot_kws)
         
         return ax
     

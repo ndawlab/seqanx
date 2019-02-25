@@ -3,14 +3,14 @@ from scipy.stats import norm
 from ._base import GraphWorld
 
 class FreeChoice(GraphWorld):
-    """Instrumental variant of the Free Choice task.
+    """Instrumental variant of the free choice task.
     
     Parameters
     ----------
     rewards : array
         Outcome values.
     probs : array
-        Probability of rewards.
+        Probability of rewards. Defaults is uniform probability.
     
     Attributes
     ----------
@@ -23,7 +23,7 @@ class FreeChoice(GraphWorld):
     n_viable_states : int
         Number of viable states.
     info : DataFrame
-        Pandas DataFrame  storing the dynamics of the Markov decision process.
+        Pandas DataFramestoring the dynamics of the Markov decision process.
         Rows correspond to each viable Q-value, whereas each column contains
         its associated information.
                 
@@ -59,7 +59,7 @@ class FreeChoice(GraphWorld):
         terminal = np.arange(5,n+5)
 
         ## Initialize GraphWorld.
-        GraphWorld.__init__(self, T, R, start, terminal, 0)
+        GraphWorld.__init__(self, T, R, start, terminal, epsilon=0)
         
         ## Update info.
         for s in [2,3,4]:

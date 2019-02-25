@@ -3,14 +3,7 @@ from scipy.stats import norm
 from ._base import GraphWorld
 
 class DecisionTree(GraphWorld):
-    """Variant of the decision tree game.
-    
-    Parameters
-    ----------
-    rewards : array
-        Outcome values.
-    probs : array
-        Probability of rewards.
+    """Decision tree from aversive pruning experiments.
     
     Attributes
     ----------
@@ -66,7 +59,7 @@ class DecisionTree(GraphWorld):
         terminal = np.arange(7,15)
 
         ## Initialize GraphWorld.
-        GraphWorld.__init__(self, T, R, start, terminal, 0)
+        GraphWorld.__init__(self, T, R, start, terminal, epsilon=0)
         
     def __repr__(self):
         return '<GraphWorld | Decision Tree>'

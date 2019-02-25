@@ -2,16 +2,10 @@
         :target: https://www.python.org/downloads/release/python-360/
 
 .. image:: https://img.shields.io/github/license/mashape/apistatus.svg
-        :target: https://github.com/szorowi1/SecretFunTimes/blob/master/LICENSE
+        :target: https://github.com/ndawlab/seqanx/blob/master/LICENSE
 
-SecretFunTimes
-==============
-
-TODO
-^^^^
-- Update FID naming, figure
-- Update free choice (fix schedule)
-- Make public, run travis-ci
+Sequential Choice in Anxiety
+============================
 
 Installation
 ^^^^^^^^^^^^

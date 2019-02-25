@@ -8,10 +8,8 @@ class Helplessness(GraphWorld):
     ----------
     reward : float
         Value of reward.
-    shock : float
+    punishment : float
         Value of punishment.
-    epsilon : float
-        Randomness of state transitions (deterministic if 0).
     
     Attributes
     ----------
@@ -29,7 +27,7 @@ class Helplessness(GraphWorld):
         its associated information.
     """
     
-    def __init__(self, reward=10, shock=-10, epsilon=0):
+    def __init__(self, reward=10, punishment=-10):
         
         ## Define gridworld.
         grid = np.zeros((5,16),dtype=float)
@@ -47,21 +45,21 @@ class Helplessness(GraphWorld):
         self.T = T
         
         ## Define rewards.
-        outcomes = [reward, shock, 0]
+        outcomes = [reward, punishment, 0]
         R = np.zeros_like(T) 
         for s, r in zip(terminal, outcomes): R[:,s] = r
         R[terminal,terminal] = 0
         R *= T
         
         ## Initialize GraphWorld.
-        GraphWorld.__init__(self, T, R, start, terminal, epsilon)
+        GraphWorld.__init__(self, T, R, start, terminal, epsilon=0)
         self.R = R
         
     def __repr__(self):
         return '<GraphWorld | Learned Helplessness>'
     
-    def plot_lh(self, reward=10, shock=-10, annot=True, grid_color='0.8',  
-                   reward_color='#f3e1db', shock_color='#1c142a', 
+    def plot_lh(self, reward=10, punishment=-10, annot=True, grid_color='0.8',  
+                   reward_color='#f3e1db', punishment_color='#1c142a', 
                    cbar=False, annot_kws=None, ax=None):
         """Plot cliff-walking environment.
 
@@ -69,15 +67,15 @@ class Helplessness(GraphWorld):
         ----------
         reward : float
             Reward value.
-        shock : float
-            Shock value.
+        punishment : float
+            Punishment value.
         annot : bool
             Annotate states.
         grid_color : str
             Color of grid tiles.
         reward_color : str
             Color of rewarding tile.
-        shock_color : str
+        punishment_color : str
             Color of punishing tile.
         cbar : bool
             Whether to draw a colorbar.
@@ -101,10 +99,10 @@ class Helplessness(GraphWorld):
 
         ## Define grid.
         grid = np.zeros((5, 15))      # Viable states
-        grid[[2,2],[0,7]] = [1, 2]    # Reward/shock states
+        grid[[2,2],[0,7]] = [1, 2]    # Reward/punishment states
 
         ## Define colormap.
-        cmap = ListedColormap([grid_color, reward_color, shock_color])
+        cmap = ListedColormap([grid_color, reward_color, punishment_color])
 
         ## Plot environment.
         ax = sns.heatmap(grid, cmap=cmap, cbar=cbar, ax=ax)
@@ -119,7 +117,7 @@ class Helplessness(GraphWorld):
         if annot:
             if annot_kws is None: annot_kws = dict()
             ax.text(0.5,2.5,reward,ha='center',va='center',**annot_kws)
-            ax.text(7.45,2.5,shock,ha='center',va='center',**annot_kws)
+            ax.text(7.45,2.5,punishment,ha='center',va='center',**annot_kws)
             annot_kws['color'] = 'k'
             ax.text(14.5,2.5,'S',ha='center',va='center',**annot_kws)
         

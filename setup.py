@@ -11,10 +11,10 @@ path = os.path.abspath(os.path.dirname(__file__))
 DISTNAME = 'sisyphus'
 MAINTAINER = 'Sam Zorowitz'
 MAINTAINER_EMAIL = 'zorowitz@princeton.edu'
-DESCRIPTION = 'Code associated with manuscript'
+DESCRIPTION = 'Evaluating sequential choice biases in anxiety disorders'
 URL = 'https://dawlab.princeton.edu/'
 LICENSE = 'MIT'
-DOWNLOAD_URL = 'https://github.com/szorowi1/SecretFunTimes'
+DOWNLOAD_URL = 'https://github.com/ndawlab/seqanx'
 
 with open(os.path.join(path, 'README.rst'), encoding='utf-8') as readme_file:
     README = readme_file.read()

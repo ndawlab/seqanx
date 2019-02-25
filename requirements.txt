@@ -1,4 +1,10 @@
-numpy>=1.15.4
-scipy>=1.1.0
-pandas>=0.23.4
-numba>=0.41.0
+# Numeric computing packages
+numpy==1.16.0
+scipy==1.2.0
+pandas==0.23.4
+numba==0.41.0
+
+# Visualization packages
+matplotlib==3.0.2
+seaborn==0.9.0
+palettable==3.1.1

@@ -2,14 +2,16 @@
 
 import numpy as np
 from copy import deepcopy
-from ._misc import check_params, betamax, categorical
+from ._misc import check_params, pessimism, categorical
 from ._misc import softmax as _softmax
 
-def egreedy(arr, epsilon):
+def epsilon_greedy(arr, epsilon):
+    """Epsilon-greedy choice rule."""
     if np.random.binomial(1,1-epsilon): return np.argmax(arr)
     else: return np.random.choice(np.arange(len(arr)),1,replace=False)[0]
     
 def softmax(arr, beta):
+    """Softmax choice rule."""
     theta = _softmax(arr * beta)
     return categorical(theta)  
 
@@ -18,35 +20,40 @@ class ModelFree(object):
     
     Parameters
     ----------
-    policy : max | min | softmax | betamax (default = softmax)
-        Choice policy.
-    beta : float
-      Inverse temperature for choice.
-    eta : float
-      Learning rate.
+    policy : max | min | softmax | pessimism (default = pessimism)
+        Learning rule.
+    eta : float (default = 0.1)
+        Learning rate.
+    gamma : float (default = 0.9)
+        Temporal discounting factor.
+    beta : float (default = 10.0)
+        Inverse temperature for future choice (ignored if policy not softmax).
+    w : float (default = 1.0)
+        Pessimism weight (ignored if policy not pessimism).
     gamma : float
       Discount factor.
 
     References
     ----------
-    1. Sutton, R. S., & Barto, A. G. (1998). Reinforcement learning: An introduction. MIT press.
+    1. Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction. MIT press.
     '''
     
-    def __init__(self, policy, beta=10, eta=0.2, gamma=0.9):
+    def __init__(self, policy='pessimism', eta=0.1, gamma=0.9, beta=10.0, w=1.0):
         
         ## Define choice policy.
         self.policy = policy
         if policy == 'max': self._policy = np.max
         elif policy == 'min': self._policy = np.min
         elif policy == 'softmax': self._policy = lambda arr: arr @ _softmax(arr * self.beta)
-        elif policy == 'betamax': self._policy = lambda arr: betamax(arr, self.beta)
+        elif policy == 'pessimism': self._policy = lambda arr: pessimism(arr, self.w)
         else: raise ValueError('Policy "%s" not valid!' %self.policy)
         
         ## Check parameters.
         self.beta = beta
         self.eta = eta
         self.gamma = gamma
-        check_params(beta=self.beta, eta=self.eta, gamma=self.gamma)       
+        self.w = w
+        check_params(beta=self.beta, eta=self.eta, gamma=self.gamma, w=self.w)       
               
     def __repr__(self):
         return '<Model Free Agent>'
@@ -56,6 +63,7 @@ class ModelFree(object):
         return deepcopy(self)
         
     def _run_episode(self, Q, gym, choice, epsilon, n_steps=100):
+        """Run single episode of training."""
         
         ## Define starting state.
         copy = gym.info.copy()
@@ -131,6 +139,15 @@ class ModelFree(object):
         ----------
         gym : GraphWorld instance
             Simulation environment.
+        choice : greedy | softmax
+            Choice rule.
+        schedule : array
+            Parameter value for choice rule (e.g. inverse temperature, epsilon greedy)
+            for a particular trial.
+        n_steps : int
+            Maximum number of steps allowed in a single episode.
+        overwrite : True | False
+            If true, overwrite previously stored Q-values (if any).
             
         Returns
         -------
@@ -141,7 +158,7 @@ class ModelFree(object):
         if choice == 'greedy': 
 
             ## Define choice rule.
-            choice = egreedy
+            choice = epsilon_greedy
 
             ## Define schedule.
             if schedule is None:  schedule = 0.05 * np.ones(100)

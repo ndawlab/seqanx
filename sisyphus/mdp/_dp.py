@@ -1,7 +1,8 @@
 """Dynamic programming module"""
 
 import numpy as np
-from ._misc import check_params, softmax, betamax
+from copy import deepcopy
+from ._misc import check_params, softmax, pessimism
 from warnings import warn
 
 class ValueIteration(object):
@@ -9,12 +10,14 @@ class ValueIteration(object):
     
     Parameters
     ----------
-    policy : max | min | softmax | betamax (default = betamax)
-        Choice policy.
-    beta : float
-        Inverse temperature (ignored if policy not softmax).
-    gamma : float
-        Discount factor.
+    policy : max | min | softmax | pessimism (default = pessimism)
+        Learning rule.
+    gamma : float (default = 0.9)
+        Temporal discounting factor.
+    beta : float (default = 10.0)
+        Inverse temperature for future choice (ignored if policy not softmax).
+    w : float (default = 1.0)
+        Pessimism weight (ignored if policy not pessimism).
     tol : float, default: 1e-4
         Tolerance for stopping criteria.
     max_iter : int, default: 100
@@ -22,29 +25,38 @@ class ValueIteration(object):
 
     References
     ----------
-    1. Sutton, R. S., & Barto, A. G. (1998). Reinforcement learning: An introduction. MIT press.
+    1. Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction. MIT press.
     """
     
-    def __init__(self, policy='betamax', beta=10, gamma=0.9, tol=0.0001, max_iter=100):
+    def __init__(self, policy='pessimism', gamma=0.9, beta=10.0, w=1.0, tol=0.0001, max_iter=100):
 
         ## Define choice policy.
         self.policy = policy
         if policy == 'max': self._policy = np.max
         elif policy == 'min': self._policy = np.min
         elif policy == 'softmax': self._policy = lambda arr: arr @ softmax(arr * self.beta)
-        elif policy == 'betamax': self._policy = lambda arr: betamax(arr, self.beta)
+        elif policy == 'pessimism': self._policy = lambda arr: pessimism(arr, self.w)
         else: raise ValueError('Policy "%s" not valid!' %self.policy)
         
         ## Check parameters.
-        self.beta = beta
         self.gamma = gamma
-        check_params(beta=self.beta, gamma=self.gamma)
+        self.beta = beta
+        self.w = w
+        check_params(gamma=self.gamma, beta=self.beta, w=self.w)
         
         ## Set convergence criteria.
         self.tol = tol
-        self.max_iter = max_iter        
+        self.max_iter = max_iter
+        
+    def __repr__(self):
+        return '<Q-value iteration>'
+            
+    def copy(self):
+        """Return copy of agent."""
+        return deepcopy(self)
         
     def _q_solve(self, info, Q=None):
+        """Solve for Q-values iteratively."""
         
         ## Initialize Q-values.
         if Q is None: Q = np.zeros(info.shape[0], dtype=float)

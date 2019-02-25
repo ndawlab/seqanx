@@ -25,7 +25,7 @@ class BART(GraphWorld):
     n_viable_states : int
         Number of viable states.
     info : DataFrame
-        Pandas DataFrame  storing the dynamics of the Markov decision process.
+        Pandas DataFrame storing the dynamics of the Markov decision process.
         Rows correspond to each viable Q-value, whereas each column contains
         its associated information.
                 
@@ -34,9 +34,6 @@ class BART(GraphWorld):
     1. Lejuez, C. W., Read, J. P., Kahler, C. W., Richards, J. B., Ramsey, S. E., Stuart, 
        G. L., ... & Brown, R. A. (2002). Evaluation of a behavioral measure of risk taking: 
        the Balloon Analogue Risk Task (BART). Journal of Experimental Psychology: Applied, 8(2), 75.
-    2. Qi, S., Hassabis, D., Sun, J., Guo, F., Daw, N., & Mobbs, D. (2018). 
-       How cognitive and reactive fear circuits optimize escape decisions in humans. 
-       Proceedings of the National Academy of Sciences, 115(12), 3186-3191. 
     """
     
     def __init__(self, pumps=10, mu=5, sd=1):
@@ -64,7 +61,7 @@ class BART(GraphWorld):
             if np.all(s_prime == s): terminal.append(s)
 
         ## Initialize GraphWorld.
-        GraphWorld.__init__(self, T, R, start, terminal, 0)
+        GraphWorld.__init__(self, T, R, start, terminal, epsilon=0)
             
         ## Remove masochistic Q-values (i.e. agent cannot elect to be eaten).
         bps = self.n_states - 1

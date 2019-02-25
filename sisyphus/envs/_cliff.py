@@ -4,13 +4,33 @@ from ._base import GraphWorld, grid_to_adj
 class CliffWalking(GraphWorld):
     """Cliff-walking task environment.
     
+    Parameters
+    ----------
+    cliff : float
+        Value of falling off cliff.
+    
+    Attributes
+    ----------
+    states : array, shape = (n,)
+        Indices of states.
+    n_states : int
+        Total number of states.
+    viable_states : array
+        Indices of viable states.
+    n_viable_states : int
+        Number of viable states.
+    info : DataFrame
+        Pandas DataFrame storing the dynamics of the Markov decision process.
+        Rows correspond to each viable Q-value, whereas each column contains
+        its associated information.
+    
     References
     ----------
-    1. Sutton, R. S., & Barto, A. G. (1998). Reinforcement learning: An introduction. MIT press.
+    1. Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction. MIT press.
     2. Gaskett, C. (2003). Reinforcement learning under circumstances beyond its control.
     """
     
-    def __init__(self, epsilon=0):
+    def __init__(self, cliff=-100):
     
         ## Define gridworld.
         self.grid = np.arange(11 * 12, dtype=int).reshape(11,12)
@@ -25,13 +45,13 @@ class CliffWalking(GraphWorld):
         
         ## Define rewards.
         R = -1 * np.ones_like(T)              # Majority transitions
-        R[:,terminal[:-1]] = -100             # Cliff transitions
+        R[:,terminal[:-1]] = cliff            # Cliff transitions
         R[:,terminal[-1]] = 0                 # Safety transitions
         R[terminal,terminal] = 0              # Terminal transitions
         R *= T
             
         ## Initialize GraphWorld.
-        GraphWorld.__init__(self, T, R, start, terminal, epsilon)
+        GraphWorld.__init__(self, T, R, start, terminal, epsilon=0)
         
     def __repr__(self):
         return '<GraphWorld | Cliff-Walking Task>'
@@ -106,8 +126,8 @@ class CliffWalking(GraphWorld):
             Axes in which to draw the plot.
         pi : array
             Agent policy, i.e. ordered visitation of states.
-        color : str (default = white)
-            Color of arrow.
+        color : str, list
+            Color(s) of arrow.
         head_width : float (default=0.25)
             Width of the arrow head.
         head_length : float (default=0.25)
@@ -119,6 +139,10 @@ class CliffWalking(GraphWorld):
             Axes in which to draw the plot.
         """
 
+        ## Error-catching.
+        if isinstance(color, str):
+            color = [color] * len(pi)
+            
         ## Iteratively plot arrows.
         for i in range(len(pi)-1):
 
@@ -126,8 +150,11 @@ class CliffWalking(GraphWorld):
             y1, x1 = np.where(self.grid==pi[i])
             y2, x2 = np.where(self.grid==pi[i+1])
 
+            ## Define arrow coordinates.
+            x, y = int(x1) + 0.5, int(y1) + 0.5
+            dx, dy = 0.5*int(x2-x1), 0.5*int(y2-y1)
+            
             ## Plot.
-            ax.arrow(int(x1)+0.5, int(y1)+0.5, 0.5*int(x2-x1), 0.5*int(y2-y1), 
-                     color=color, head_width=head_width, head_length=head_length)
-
+            ax.arrow(x, y, dx, dy, color=color[i], head_width=head_width, head_length=head_length)
+            
         return ax
