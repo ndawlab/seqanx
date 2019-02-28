@@ -99,11 +99,19 @@ class DecisionTree(GraphWorld):
 
         return ax
 
-    def _draw_node_labels(self, ax, xpos, ypos, fontsize=14):
-        """Draw decision tree node labels. See plot_decision tree for details."""
+    def _draw_node_labels(self, ax, fontsize=14, color='w'):
+        """Draws one-step reward values as node labels."""
 
-        for i, (x, y) in enumerate(zip(xpos, ypos)):
-            ax.text(x, y, '%0.0f' %(i+1), ha='center', va='center', fontsize=fontsize)
+        ## Define node positions.
+        xpos = [-1,1,-1.5,-0.5,0.5,1.5,-1.75,-1.25,-0.75,-0.25,0.25,0.75,1.25,1.75]
+        ypos = [2, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+        
+        ## Define node values.
+        labels = [-70, -20, -20, -70, -20,-70, -20, 20, 20, 140, -20, 20, -20, 20]
+        
+        for x, y, label in zip(xpos, ypos, labels):
+            ax.text(x, y, '%0.0f' %label, ha='center', va='center', fontsize=fontsize, 
+                    fontweight='heavy', color=color)
 
         return ax
 
@@ -224,7 +232,7 @@ class DecisionTree(GraphWorld):
 
         ## Optional details.
         if path_sums: ax = self._draw_path_sums(ax, xpos[-8:], alpha=alpha)
-        if node_labels: ax = self._draw_node_labels(ax, xpos, ypos)
+        if node_labels: ax = self._draw_node_labels(ax)
         if isinstance(edge_labels, (list, tuple, np.ndarray)): 
             ax = self._draw_edge_labels(ax, edge_labels, alpha=edge_label_alpha)
         elif np.equal(edge_labels, True):
