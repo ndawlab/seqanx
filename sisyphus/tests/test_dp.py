@@ -24,7 +24,7 @@ def test_value_iteration():
     assert np.array_equal(qvi.pi, np.arange(3))
 
     ## Test betamax learning.
-    qvi = ValueIteration(policy='betamax', gamma=0.9, beta=0.5)
+    qvi = ValueIteration(policy='pessimism', gamma=0.9, w=0.5)
     qvi = qvi.fit(gym)
     assert np.array_equal(qvi.Q, [ 0.0,  1. , -1. ,  0. ,  0. ])
     assert np.array_equal(qvi.V, [ 0.0,  1. ,  0. ,  0. ])

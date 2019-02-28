@@ -28,7 +28,7 @@ def test_model_free():
     assert np.array_equal(agent.pi, np.arange(3))
 
     ## Test betamax learning.
-    agent = ModelFree(policy='betamax', eta=0.2, gamma=0.9, beta=0.5)
+    agent = ModelFree(policy='pessimism', eta=0.2, gamma=0.9, w=0.5)
     agent = agent.fit(gym, choice='softmax', schedule=schedule)
     assert np.allclose(agent.Q, [ 0.0,  1. , -1. ,  0. ,  0. ], atol=1e-3, rtol=0)
     assert np.allclose(agent.V, [ 0.0,  1. ,  0. ,  0. ], atol=1e-3, rtol=0)
