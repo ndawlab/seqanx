@@ -80,4 +80,4 @@ target/
 .ipynb_checkpoints
 
 #Local analyses
-matutils
+*.csv

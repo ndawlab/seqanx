@@ -1,9 +1,8 @@
 import numpy as np
-from scipy.stats import norm
 from ._base import GraphWorld
 
-class BART(GraphWorld):
-    """Balloon analog risk task environment.
+class SleepingPredator(GraphWorld):
+    """Sleeping predator (behavioral inhibition) task.
     
     Parameters
     ----------
@@ -31,15 +30,16 @@ class BART(GraphWorld):
                 
     References
     ----------
-    1. Lejuez, C. W., Read, J. P., Kahler, C. W., Richards, J. B., Ramsey, S. E., Stuart, 
-       G. L., ... & Brown, R. A. (2002). Evaluation of a behavioral measure of risk taking: 
-       the Balloon Analogue Risk Task (BART). Journal of Experimental Psychology: Applied, 8(2), 75.
+    1. Bach DR (2015) Anxiety-Like Behavioural Inhibition Is Normative under Environmental
+       Threat-Reward Correlations. PLoS Comput Biol 11:e1004646.
+    2. Bach DR (2017) The cognitive architecture of anxiety-like behavioral inhibition. 
+       J Exp Psychol Hum Percept Perform 43:18–29.
     """
     
-    def __init__(self, pumps=10, mu=5, sd=1):
+    def __init__(self, p=0.1, n_bins=1):
         
         ## Define one-step transition matrix.
-        n = pumps
+        n = 7
         T = np.zeros((n+2,n+2)) * np.nan
         T[np.arange(n),np.arange(n)+1] = 1   # Corridor transitions
         T[:n,n] = 1                          # Safety transition
@@ -48,8 +48,8 @@ class BART(GraphWorld):
 
         ## Define rewards.
         R = np.copy(T)
-        R[np.arange(n),np.arange(n)+1] = 0   # Internal transitions
-        R[:n,n] = np.arange(n) + 1           # Safety transition
+        R[np.arange(n),np.arange(n)+1] = 0   # Corridor transitions
+        R[:n,n] = np.arange(n)               # Safety transition
         R[:n,n+1] = -np.arange(n)            # Danger transition
         R[[n,n+1],[n,n+1]] = 0               # Terminal states 
         
@@ -63,20 +63,17 @@ class BART(GraphWorld):
         ## Initialize GraphWorld.
         GraphWorld.__init__(self, T, R, start, terminal, epsilon=0)
             
-        ## Remove masochistic Q-values (i.e. agent cannot elect to pop balloon).
+        ## Remove masochistic Q-values (i.e. agent cannot elect to be eaten).
         bps = self.n_states - 1
         sane_ix = [np.logical_or(arr[0]!=bps, arr.size==1) for arr in self.info["S'"].values]
         self.info = self.info[sane_ix].reset_index(drop=True)
             
-        ## Update probability of balloon pop.
-        states = np.arange(pumps)
-        cdf = norm(mu, sd).cdf(states)
-        
+        ## Update probability of being eaten.  
+        pmf = p * np.sum([(1-p)**i for i in range(n_bins)])
         for i, row in self.info.iterrows():
-    
             s, s_prime = row["S"], row["S'"][0]
             if not s_prime in self.terminal:
-                self.info.at[i,'T'] = np.array([1-cdf[s], 0, cdf[s]])
+                self.info.at[i,'T'] = np.array([1-pmf, 0, pmf])
                 
     def __repr__(self):
-        return '<GraphWorld | Balloon Analog Risk Task>'
+        return '<GraphWorld | Sleeping Predator Task>'
