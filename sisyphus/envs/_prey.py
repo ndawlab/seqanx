@@ -6,12 +6,8 @@ class SleepingPredator(GraphWorld):
     
     Parameters
     ----------
-    pumps : int
-        Maximum number of balloon pumps.
-    mu : float
-        Average state at which balloon pops.
-    sd : float
-        Deviation around mean.
+    p : float
+        Probability of predation.
     
     Attributes
     ----------
@@ -36,7 +32,7 @@ class SleepingPredator(GraphWorld):
        J Exp Psychol Hum Percept Perform 43:18–29.
     """
     
-    def __init__(self, p=0.1, n_bins=1):
+    def __init__(self, p=0.1):
         
         ## Define one-step transition matrix.
         n = 7
@@ -69,11 +65,10 @@ class SleepingPredator(GraphWorld):
         self.info = self.info[sane_ix].reset_index(drop=True)
             
         ## Update probability of being eaten.  
-        pmf = p * np.sum([(1-p)**i for i in range(n_bins)])
         for i, row in self.info.iterrows():
             s, s_prime = row["S"], row["S'"][0]
             if not s_prime in self.terminal:
-                self.info.at[i,'T'] = np.array([1-pmf, 0, pmf])
+                self.info.at[i,'T'] = np.array([1-p, 0, p])
                 
     def __repr__(self):
         return '<GraphWorld | Sleeping Predator Task>'
