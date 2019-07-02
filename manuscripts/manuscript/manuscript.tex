@@ -121,9 +121,11 @@ Our model predicts this result (Fig.~3b), though for a somewhat different reason
 %%% also the graying out of the unchosen options on the right is maybe a little strong, hard to read, maybe darken these a bit (then you can also gray out 
 %%% suboptimal paths on the left to make them really parallel?)
 
+% how about this?
+
 \begin{figure}[!b]
   \centerline{%
-    \resizebox{1.0\textwidth}{!}{\includegraphics[trim={0 0 0 0},clip]{../../figures/04_tree_rldm.png}}%
+    \resizebox{1.0\textwidth}{!}{\includegraphics[trim={0 0 0 0},clip]{../../figures/04_tree.png}}%
   }
   \par \textbf{Figure 3:} (A) The decision tree environment from \cite{Huys2012} and \cite{Lally2017}. An optimistic agent ($w=1$) prefers the optimal loss-minimizing policy through the initial large loss (left branch). (B) A pessimistic agent ($w=0.5$) comes to prefer the branch without the large loss so as to avoid being unable to recoup the large initial loss. One-step rewards are presented in each state; the net value $Q$ on each path is shown numerically. (Parameters: $\gamma = 1.0$)
 \end{figure}
