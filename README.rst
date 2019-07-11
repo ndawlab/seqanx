@@ -16,17 +16,35 @@ Author
 ^^^^^^
 Sam Zorowitz (zorowitz [at] princeton.edu)
 
-Organization
-^^^^^^^^^^^^
+Project Organization
+^^^^^^^^^^^^^^^^^^^^
+::
 
-This repository contains all of the code used study the behavior simulated agents with pessimistic future expectations. The simulation code is organized in a standalone python package, :code:`sisyphus`, which can be installed following the instructions below. The package contains functions useful for constructing arbitrary grid/graph worlds and for solving for state-action values through dynamic programming (i.e. Q-value iteration) and temporal difference learning (i.e. Q-learning) methods.
-
-The results of our simulations can be found in the notebooks folder. With :code:`sisyphus` installed, each notebook and its results should be reproducible on any computer. The results found here form the basis of the manuscripts located in the folder of the same name.
+    ├── figures                      <- Figures for presentations & manuscript.
+    │   
+    ├── manuscripts                  <- LaTeX documents for RLDM 2019 submission.
+    │   
+    ├── notebooks                    <- Analysis notebooks for the projects.
+    │   ├── 01_OpenField.ipynb       <- Demo of pessimistic RL in toy MDP.
+    │   ├── 02_AppAvo.ipynb          <- Model of approach-avoidance bias.
+    │   ├── 03_Helplessness.ipynb    <- Model of anxiety-to-depression transition.
+    │   ├── 04_DecisionTree.ipynb    <- Model of aversive pruning. 
+    │   ├── 05_FreeChoice.ipynb      <- Model of free choice premium.
+    │   ├── 06_CliffWalking.ipynb    <- Reproduction of Gaskett (2003).
+    │   
+    ├── sisyphus                     <- Source code used in notebooks (installation instructions below).
+    │   ├── envs                     <- Task environments.
+    │   ├── mdp                      <- RL algorithms (value iteration, temporal difference learning).
+    │   ├── tests                    <- Continuous integration tests.
+    │   
+    ├── requirements.txt             <- Python packages used in this project.
 
 Installation
 ^^^^^^^^^^^^
 
-To install the code used to generate the results, open a terminal and run:
+This repository hosts the :code:`sisyphus` package, which is used in all of this project's simulations. The package contains functions for constructing arbitrary MDP environments and several reinforcement learning algorithms.
+
+To install the code through Github, open a terminal and run:
 
 .. code-block:: bash
 
@@ -39,3 +57,5 @@ Alternately, you can clone the repository and install locally:
     git clone https://github.com/ndawlab/seqanx
     cd seqanx
     pip install -e .
+
+Once installed, the simulations (found in the notebooks folder) should be reproducible on any computer.
