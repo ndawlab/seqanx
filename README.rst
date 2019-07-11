@@ -22,7 +22,7 @@ Project Organization
 
     ├── figures                      <- Figures for presentations & manuscript.
     │   
-    ├── manuscripts                  <- LaTeX documents for RLDM 2019 submission.
+    ├── manuscripts                  <- Manuscripts & RLDM 2019 abstract/poster.
     │   
     ├── notebooks                    <- Analysis notebooks for the projects.
     │   ├── 01_OpenField.ipynb       <- Demo of pessimistic RL in toy MDP.
