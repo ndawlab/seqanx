@@ -98,13 +98,13 @@ class FreeChoice(GraphWorld):
 
         return ax
 
-    def _draw_edge_labels(self, ax, fontsize=14):
+    def _draw_edge_labels(self, ax, fontsize):
 
-        ax.text(0.5,  0.15, '0', ha='center', va='bottom', fontsize=fontsize)
-        ax.text(0.5, -0.15, '0', ha='center', va='top', fontsize=fontsize)
-        ax.text(1.5,  0.35, r'$[-1, 1]$', ha='center', va='bottom', fontsize=fontsize, rotation=15)
-        ax.text(1.5,  0.15, r'$[-1, 1]$', ha='center', va='top', fontsize=fontsize, rotation=-15)
-        ax.text(1.5, -0.35, r'$[-1, 1]$', ha='center', va='top', fontsize=fontsize, rotation=-15)
+        ax.text(0.5,  0.150, '0', ha='center', va='bottom', fontsize=fontsize)
+        ax.text(0.5, -0.150, '0', ha='center', va='top', fontsize=fontsize)
+        ax.text(1.5,  0.350, r'$[-1, 1]$', ha='center', va='bottom', fontsize=fontsize, rotation=15)
+        ax.text(1.5,  0.145, r'$[-1, 1]$', ha='center', va='top', fontsize=fontsize, rotation=-15)
+        ax.text(1.5, -0.355, r'$[-1, 1]$', ha='center', va='top', fontsize=fontsize, rotation=-15)
         return ax
 
     def plot_free_choice(self, ax, s=50, free_color='#834c7d', fixed_color='0.9',
@@ -138,7 +138,7 @@ class FreeChoice(GraphWorld):
         ax = self._draw_nodes(ax, s=50, free_color=free_color, fixed_color=fixed_color)
 
         ## Optional details.
-        if edge_labels: ax = self._draw_edge_labels(ax, fontsize=18)
+        if edge_labels: ax = self._draw_edge_labels(ax, fontsize=14)
 
         ## Clean up.
         ax.set(xlim=(-0.5,2.5), xticks=[], ylim=(-0.7,0.7), yticks=[])
