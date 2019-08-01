@@ -102,9 +102,9 @@ class FreeChoice(GraphWorld):
 
         ax.text(0.5,  0.15, '0', ha='center', va='bottom', fontsize=fontsize)
         ax.text(0.5, -0.15, '0', ha='center', va='top', fontsize=fontsize)
-        ax.text(1.5,  0.40, r'$R$', ha='center', va='bottom', fontsize=fontsize)
-        ax.text(1.5,  0.10, r'$R$', ha='center', va='top', fontsize=fontsize)
-        ax.text(1.5, -0.40, r'$R$', ha='center', va='top', fontsize=fontsize)
+        ax.text(1.5,  0.35, r'$[-1, 1]$', ha='center', va='bottom', fontsize=fontsize, rotation=15)
+        ax.text(1.5,  0.15, r'$[-1, 1]$', ha='center', va='top', fontsize=fontsize, rotation=-15)
+        ax.text(1.5, -0.35, r'$[-1, 1]$', ha='center', va='top', fontsize=fontsize, rotation=-15)
         return ax
 
     def plot_free_choice(self, ax, s=50, free_color='#834c7d', fixed_color='0.9',
