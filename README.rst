@@ -1,7 +1,7 @@
 .. image:: https://img.shields.io/travis/ndawlab/seqanx.svg
         :target: https://travis-ci.org/ndawlab/seqanx
 
-.. image:: https://img.shields.io/badge/python-3.6-blue.svg
+.. image:: https://img.shields.io/badge/python-3.6+-blue.svg
         :target: https://www.python.org/downloads/release/python-360/
 
 .. image:: https://img.shields.io/github/license/mashape/apistatus.svg
