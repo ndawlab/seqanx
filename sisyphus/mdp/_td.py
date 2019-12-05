@@ -68,6 +68,9 @@ class ModelFree(object):
         ## Define starting state.
         copy = gym.info.copy()
         s = gym.start  
+        
+        ## Initialize action list.
+        actions = []
 
         for _ in np.arange(n_steps):
 
@@ -78,7 +81,8 @@ class ModelFree(object):
             copy['Q'] = Q.copy()
             i = choice(copy.loc[copy.S==s,'Q'].values, epsilon)
             a = copy[copy.S==s].index[i]
-                        
+            actions.append(a)
+                
             ## Observe next state and reward.
             i = categorical(copy.loc[a,'T'])
             s_prime = copy.loc[a,"S'"][i]
@@ -92,7 +96,7 @@ class ModelFree(object):
             ## Update state.
             s = s_prime
 
-        return Q
+        return Q, actions
     
     def _v_solve(self, info):
         """Compute state value from Q-table."""
@@ -132,7 +136,7 @@ class ModelFree(object):
                 
         return policy
         
-    def fit(self, gym, choice='softmax', schedule=None, n_steps=100, overwrite=False):
+    def fit(self, gym, choice='softmax', schedule=None, n_steps=100, overwrite=False, return_actions=False):
         '''Run a single test episode (i.e. Q-values not updated).
         
         Parameters
@@ -148,6 +152,8 @@ class ModelFree(object):
             Maximum number of steps allowed in a single episode.
         overwrite : True | False
             If true, overwrite previously stored Q-values (if any).
+        return_actions : True | False
+            If true, return all choices made during training.
             
         Returns
         -------
@@ -185,7 +191,11 @@ class ModelFree(object):
             Q = self.Q.copy()
             
         ## Solve for Q-values.
-        for e in schedule: Q = self._run_episode(Q, gym, choice, e, n_steps)
+        actions = []
+        for e in schedule: 
+            Q, a = self._run_episode(Q, gym, choice, e, n_steps)
+            actions.append(a)
+            
         self.Q = Q
         
         ## Solve for values.
@@ -194,4 +204,5 @@ class ModelFree(object):
         ## Compute policy.
         self.pi = self._pi_solve(gym)
                 
-        return self
+        if return_actions: return self, actions
+        else: return self
