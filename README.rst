@@ -21,22 +21,22 @@ Project Organization
 ::
 
     ├── figures                      <- Figures for presentations & manuscript.
-    │   
+    │
     ├── manuscripts                  <- Manuscripts & RLDM 2019 abstract/poster.
-    │   
+    │
     ├── notebooks                    <- Analysis notebooks for the projects.
     │   ├── 01_OpenField.ipynb       <- Demo of pessimistic RL in toy MDP.
     │   ├── 02_AppAvo.ipynb          <- Model of approach-avoidance bias.
     │   ├── 03_Helplessness.ipynb    <- Model of anxiety-to-depression transition.
-    │   ├── 04_DecisionTree.ipynb    <- Model of aversive pruning. 
+    │   ├── 04_DecisionTree.ipynb    <- Model of aversive pruning.
     │   ├── 05_FreeChoice.ipynb      <- Model of free choice premium.
     │   ├── 06_CliffWalking.ipynb    <- Reproduction of Gaskett (2003).
-    │   
+    │
     ├── sisyphus                     <- Source code used in notebooks (installation instructions below).
     │   ├── envs                     <- Task environments.
     │   ├── mdp                      <- RL algorithms (value iteration, temporal difference learning).
     │   ├── tests                    <- Continuous integration tests.
-    │   
+    │
     ├── requirements.txt             <- Python packages used in this project.
 
 Installation
@@ -59,3 +59,8 @@ Alternately, you can clone the repository and install locally:
     pip install -e .
 
 Once installed, the simulations (found in the notebooks folder) should be reproducible on any computer.
+
+Other Languages
+^^^^^^^^^^^^^^^
+
+[Jill de Ron](https://twitter.com/jillderon) very kindly translated the python code for the pessimistic model into R. With her permission, the code is available in the corresponding folder. Thanks Jill!
