@@ -63,4 +63,4 @@ Once installed, the simulations (found in the notebooks folder) should be reprod
 Other Languages
 ^^^^^^^^^^^^^^^
 
-[Jill de Ron](https://twitter.com/jillderon) very kindly translated the python code for the pessimistic model into R. With her permission, the code is available in the corresponding folder. Thanks Jill!
+`Jill de Ron <https://twitter.com/jillderon>`_ very kindly translated the python code for the pessimistic model into R. With her permission, the code is available in the corresponding folder. Thanks Jill!
